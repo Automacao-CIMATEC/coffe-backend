@@ -1,0 +1,37 @@
+Template de boas práticas para commit em repositório de GitHub 
+
+<Título do commit, contendo uma breve explicação sobre o que foi feito> 
+
+<O que foi feito neste commit, com um nível sútil de detalhamento e contexto>*1 
+
+<O que deve ser feito nos próximos commits, sem detalhamentos e com uma abordagem mais generalista>*1*3
+
+<Quais arquivos foram modificados e o tipo de modificação>*2
+
+*1 – Este tópico deve seguir a seguinte estrutura de classificação de commit: 
+
+    feat: um novo recurso que você está adicionando a uma aplicação específica. 
+
+    fix: a resolução de um bug. 
+
+    style: recurso e atualizações relacionadas à estilização. 
+
+    refactor: refatoração de uma seção específica da base de código. 
+
+    test: tudo o que for relacionado a testes. 
+
+    docs: tudo o que for relacionado à documentação.
+
+    chore: manutenção regular do código. 
+
+*2 - O commit gera essa estrutura automaticamente. Entretanto, Apesar de ser feito de forma automática, geralmente as ferramentas de gerenciamento para GitHub deixam por padrão essa estrutura comentada, impedindo de ser publicado junto ao commit. No momento do commit deve-se conferir se está comentado e descomentar caso esteja. 
+
+*3 - Este tópico de pendências é "opcional", uma vez que nem sempre é possível identificar essas pendências de forma explicita. Entretanto, informar sempre que possível.
+
+OBS 1: Você pode adicionar textos para explicar com maior detalhamento algum tópico. 
+
+OBS 2: Os tópicos do template propriamente dito estão entre <>. Os outros textos são apenas explicativos do template.
+
+OBS 3: Seguir os padrões de simbologia e identação exemplificados no exemplo de commit.
+
+OBS 4: Nem todos os commits precisam ser super detalhados. Entretanto sempre que for publicado uma versão com grandes atualizações ou finalização de uma grande feature, trazer um commit com um grau maior de detalhamento. Por exemplo, o commit de uma versão na qual foi concluído a implementação de um protocolo de comunicação, deve conter um grau de detalhamento maior do que um commit que implemente uma parte da comunicação.

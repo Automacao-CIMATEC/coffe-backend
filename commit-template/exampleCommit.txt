@@ -1,0 +1,44 @@
+Primeira versão da aplicação de gerenciamento de rota da POC
+
+	Feat:
+	
+	    - Criar rotas
+	    
+            - Funcionalidade de criação de rotas
+                - Classe Rota com a finalidade de criar as rotas, atribuindo os segmentos e buffers pertententes aquela rota
+                
+            - Funcionalidade de criação de buffers
+                - Classe Buffer com a finalidade de criar os buffers, atribuindo segmentos pertencentes a qualquer rota
+
+            - Importar rotas
+                - Classe Segment com a finalidade de simular os inputs do front-end
+
+            - Gerenciar rotas
+                - Classe routeManager com a finalidade de gerenciar as rotas (ainda incompleto)
+
+	OBS: O Script Main permite o teste das funcionalidades a partir do terminal do python
+
+Pendências:
+
+	Refactor:
+	
+	    - Alterar a classe Buffer para um comportamento similar a classe Segment, para que seja uma simulação dos inputs do front-end
+
+	Feat:
+    
+	    - Concluir a classe routeManager
+            - OBS: Será necessário estudar em detalhes esta funcionalidade no CLP Master a fim de trazer um comportamento similar e melhorado
+
+	    - Implementar os Controllers
+		    - Implementar o framework FastAPI para a criação de rotas HTTP, com a finalidade de receber os inputs do front-end
+		    - Desenvolver um cliente python simples com a finalidade de consumir essas rotas e simular os inputs do front-end
+
+	    - Integrar com a aplicação de comunicação com AGV
+		    - Uma vez a aplicação de comunicação implementada, integrar com esta, com a finalidade de gerenciar AGVs reais ao invés de simulados
+
+new file:   entities/Route.py
+new file:   implementations/routeManager.py
+new file:   main.py
+new file:   requirements.txt
+new file:   simulators/Buffer.py
+new file:   simulators/Segment.py

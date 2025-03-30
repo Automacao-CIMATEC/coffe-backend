@@ -1,0 +1,4 @@
+org/coffee/Main.class
+org/coffee/configs/OpenApiConfig.class
+org/coffee/domain/models/Message.class
+org/coffee/controllers/MessageController.class
