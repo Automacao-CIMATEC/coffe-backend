@@ -11,10 +11,10 @@ import java.util.List;
 public abstract class ControllerProtocol
 {
     /*
-     * ATTRIBUTES
+     * ATTRIBUTES:
      */
-    public Integer m_ip;
-    public Integer m_port;
+    public Integer m_ip;    // IP address of protocol instance
+    public Integer m_port;  // IP Port of protocol instance
 
     /*
      * METHODS:
@@ -22,6 +22,8 @@ public abstract class ControllerProtocol
 
     /*
      * @brief Class Constructor
+     * @param[in]   ip
+     * @param[in]   port
      */
     public ControllerProtocol(Integer ip, Integer port)
     {
@@ -30,7 +32,8 @@ public abstract class ControllerProtocol
     }
 
     /*
-     * @brief
+     * @brief This method opens the connection between Server/Client
+     * @return This method returns a 'ReturnType' Enum
      */
     public ReturnType openConnection()
     {
@@ -42,7 +45,8 @@ public abstract class ControllerProtocol
     }
 
     /*
-     * @brief
+     * @brief This method closes the connection between Server/Client
+     * @return This method returns a 'ReturnType' Enum
      */
     public ReturnType closeConnection()
     {
@@ -54,7 +58,9 @@ public abstract class ControllerProtocol
     }
 
     /*
-     * @brief
+     * @brief This method requests content from the Server/Client
+     * @param[out] dataList     An 'ArrayList' where the received message will be parsed
+     * @return This method returns a 'ReturnType' Enum
      */
     public ReturnType readData(ArrayList dataList)
     {
@@ -66,7 +72,9 @@ public abstract class ControllerProtocol
     }
 
     /*
-     * @brief Class Constructor
+     * @brief This method sends a message to the Server/Client
+     * @param[in] dataList      An 'ArrayList' containing the sent message
+     * @return This method returns a 'ReturnType' Enum
      */
     public ReturnType writeData(ArrayList dataList)
     {
