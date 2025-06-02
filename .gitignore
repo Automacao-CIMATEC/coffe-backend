@@ -1,2 +1,5 @@
 
 *.class
+*.lst
+*.class
+target/classes/org/coffee/controllers/MessageController.class

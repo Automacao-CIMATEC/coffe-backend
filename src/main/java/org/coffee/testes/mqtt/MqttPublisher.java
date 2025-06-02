@@ -6,7 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MqttPublisher {
     public static void main(String[] args) {
-        String broker = "tcp://localhost:1883"; // MQTT broker address
+        String broker = "tcp://localhost:1884"; // MQTT broker address
         String topic = "test";                  // Topic to publish to
         String message = "Hello from Java!";    // Message content
 
