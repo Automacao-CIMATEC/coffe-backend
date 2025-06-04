@@ -50,14 +50,14 @@ public abstract class ControllerProtocol
      * @param[out] dataList     An 'ArrayList' where the received message will be parsed
      * @return This method returns a 'float' type
      */
-    public abstract float readDataFloat();
+    public abstract float readDataFloat(int parameter);
 
     /**
      * @brief This method requests content from the Server/Client
      * @param[out] dataList     An 'ArrayList' where the received message will be parsed
      * @return This method returns a 'boolean' type
      */
-    public abstract boolean readDataBoolean();
+    public abstract boolean readDataBoolean(int param);
 
     /**
      * @brief This method requests content from the Server/Client
