@@ -1,7 +1,10 @@
-package org.coffee.domain.dtos;
+package org.coffee.examples.api;
 
-public class MessageDto {
+public class ExampleMessageDto {
     private String message;
+
+    public ExampleMessageDto(String valueWrittenSuccessfully) {
+    }
 
     // Getters and Setters
     public String getMessage() {

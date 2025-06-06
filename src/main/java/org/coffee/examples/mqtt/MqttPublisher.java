@@ -1,4 +1,4 @@
-package org.coffee.testes.mqtt;
+package org.coffee.examples.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

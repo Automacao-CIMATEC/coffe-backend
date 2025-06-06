@@ -6,6 +6,15 @@ public class PlcValueDto {
     private PlcDataType type;
     private Object value;
 
+    // Add a default constructor
+    public PlcValueDto() {
+    }
+
+    // Constructor for error messages (if needed)
+    public PlcValueDto(String errorMessage) {
+        this.value = errorMessage;
+    }
+
     // Getters and Setters
     public PlcDataType getType() {
         return type;

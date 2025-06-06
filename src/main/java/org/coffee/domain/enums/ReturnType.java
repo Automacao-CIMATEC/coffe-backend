@@ -1,4 +1,4 @@
-package org.coffee.modeling;
+package org.coffee.domain.enums;
 
 public enum ReturnType
 {

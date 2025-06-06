@@ -1,9 +1,9 @@
-package org.coffee.modeling;
+package org.coffee.domain.abstracts;
 
 /*
  * @brief This is the abstract class from witch all protocol classes will inherit
  */
-public abstract class ControllerProtocol
+public abstract class AbstractProtocol
 {
     /**
      * ATTRIBUTES:
@@ -20,7 +20,7 @@ public abstract class ControllerProtocol
      * @param[in]   ip
      * @param[in]   port
      */
-    public ControllerProtocol(String ip, int port)
+    public AbstractProtocol(String ip, int port)
     {
         this.m_ip = ip;
         this.m_port = port;

@@ -1,13 +1,13 @@
-package org.coffee.domain.models;
+package org.coffee.examples.api;
 
-public class Message {
+public class ExampleMessage {
     private Long id;
     private String content;
 
     // Constructors
-    public Message() {}
+    public ExampleMessage() {}
 
-    public Message(Long id, String content) {
+    public ExampleMessage(Long id, String content) {
         this.id = id;
         this.content = content;
     }

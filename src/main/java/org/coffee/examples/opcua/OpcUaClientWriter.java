@@ -1,4 +1,4 @@
-package org.coffee.testes.opcua;
+package org.coffee.examples.opcua;
 
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;

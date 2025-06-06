@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.coffee.domain.dtos.MessageDto;
+import org.coffee.examples.api.ExampleMessageDto;
 import org.coffee.domain.dtos.PlcValueDto;
 import org.coffee.domain.enums.PlcDataType;
 import org.springframework.http.HttpMethod;
@@ -56,7 +56,7 @@ public class SiemensController extends BasePlcController {
     @PostMapping("/write")
     @Operation(summary = "Escrita de uma variável através do protocolo Profinet")
     @ApiResponse(responseCode = "200", description = "Valor escrito com sucesso")
-    public MessageDto writeSiemens(
+    public ExampleMessageDto writeSiemens(
             @Parameter(description = "IP do CLP", required = true)
             @RequestParam String ip,
 
@@ -88,7 +88,7 @@ public class SiemensController extends BasePlcController {
 
         return proxyRequest(plcServiceUrl + "/plc/siemens/write",
                 requestBody,
-                MessageDto.class,
+                ExampleMessageDto.class,
                 HttpMethod.POST);
     }
 }

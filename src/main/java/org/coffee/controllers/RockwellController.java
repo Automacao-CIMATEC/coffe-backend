@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.coffee.domain.dtos.MessageDto;
+import org.coffee.examples.api.ExampleMessageDto;
 import org.coffee.domain.dtos.PlcValueDto;
 import org.coffee.domain.enums.PlcDataType;
 import org.springframework.http.HttpMethod;
@@ -40,7 +40,7 @@ public class RockwellController extends BasePlcController {
     @GetMapping("/write")
     @Operation(summary = "Escrita de uma variável através do protocolo Ethernet/IP")
     @ApiResponse(responseCode = "200", description = "Variável escrita com sucesso")
-    public MessageDto writeRockwell(
+    public ExampleMessageDto writeRockwell(
             @Parameter(description = "IP do CLP", required = true)
             @RequestParam String ip,
 
@@ -58,7 +58,7 @@ public class RockwellController extends BasePlcController {
 
         return proxyRequest(plcServiceUrl + "/plc/rockwell/write?" + queryParams,
                 null,
-                MessageDto.class,
+                ExampleMessageDto.class,
                 HttpMethod.POST);
     }
 }

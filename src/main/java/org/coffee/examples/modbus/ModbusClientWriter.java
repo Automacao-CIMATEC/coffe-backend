@@ -1,4 +1,4 @@
-package org.coffee.testes.modbus;
+package org.coffee.examples.modbus;
 
 import com.digitalpetri.modbus.master.ModbusTcpMaster;
 import com.digitalpetri.modbus.master.ModbusTcpMasterConfig;

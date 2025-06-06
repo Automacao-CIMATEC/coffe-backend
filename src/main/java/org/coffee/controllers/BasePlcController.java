@@ -1,7 +1,5 @@
 package org.coffee.controllers;
 
-import org.coffee.domain.dtos.MessageDto;
-import org.coffee.domain.dtos.PlcValueDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpStatusCodeException;
