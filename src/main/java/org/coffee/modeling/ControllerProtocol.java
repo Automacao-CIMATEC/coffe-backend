@@ -115,4 +115,14 @@ public abstract class ControllerProtocol
     {
         this.m_port = m_port;
     }
+
+    public abstract String readDataString(int startingAddress, int registerCount);
+
+    public abstract void writeData(int address, int data);
+
+    public abstract void writeData(int address, float data);
+
+    public abstract void writeData(int address, boolean data);
+
+    public abstract void writeData(int startingAddress, String data);
 }
