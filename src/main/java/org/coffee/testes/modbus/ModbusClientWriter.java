@@ -22,7 +22,7 @@ public class ModbusClientWriter {
         int floatRegisterAddress = 1; // modbusFloat (Holding Register 400002 → 1 in protocol)
 
         // Values to write
-        boolean boolValue = false;     // Example boolean value
+        boolean boolValue = true;     // Example boolean value
         int intValue = 567567;         // Example integer value
         float floatValue = 5.234f;  // Example float value
 
