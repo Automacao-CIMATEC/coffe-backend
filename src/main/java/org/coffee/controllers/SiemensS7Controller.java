@@ -13,13 +13,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/profinet")
-@Tag(name = "Profinet", description = "Endpoints para comunicação através do protocolo Profinet (Exclusivo para comunicação com CLPs Siemens S7)")
-public class SiemensController extends BasePlcController {
+/*
+ OBSERVAÇÃO IMPORTANTE
+ A funcionalidade de comunicação via protocolo Siemens S7 não está nativamente contida nessa aplicação JAVA
+ Existe um micro serviço Python que possui essa funcionalidade, o aplicação JAVA consome esse serviço via HTTP
 
-    @PostMapping("/read")
-    @Operation(summary = "Leitura de uma variável através do protocolo Profinet")
+ Essa funcionalidade é exclusiva para comunicação com CLPs Siemens S7
+ Essa funcionalidade NÃO irá funcionar em qualquer outro dispositivo, mesmo que seja compatível com o protocolo Siemens S7
+ Lembrete para testar essa funcionalidade com outro dispositivo Siemens como IHM que fale o protocolo Siemens S7 para ter certeza que só funciona com CLPs
+ */
+
+@RestController
+@RequestMapping("/siemens-s7")
+@Tag(name = "Siemens S7", description = "Endpoints para comunicação através do protocolo Siemens S7 (Exclusivo para comunicação com CLPs Siemens S7)")
+public class SiemensS7Controller extends BasePlcController {
+
+    @GetMapping("/read") // VERIFICAR SE ESTÁ FUNCIONANDO APÓS ALTERAR PARA GET
+    @Operation(summary = "Leitura de uma variável através do protocolo Siemens S7")
     @ApiResponse(responseCode = "200", description = "Valor lido com sucesso")
     public PlcValueDto readSiemens(
             @Parameter(description = "IP do CLP", required = true)
@@ -54,7 +64,7 @@ public class SiemensController extends BasePlcController {
     }
 
     @PostMapping("/write")
-    @Operation(summary = "Escrita de uma variável através do protocolo Profinet")
+    @Operation(summary = "Escrita de uma variável através do protocolo Siemens S7")
     @ApiResponse(responseCode = "200", description = "Valor escrito com sucesso")
     public ExampleMessageDto writeSiemens(
             @Parameter(description = "IP do CLP", required = true)

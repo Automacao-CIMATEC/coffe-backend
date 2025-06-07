@@ -125,4 +125,7 @@ public abstract class AbstractProtocol
     public abstract void writeData(int address, boolean data);
 
     public abstract void writeData(int startingAddress, String data);
+
+    // GETTERS AND SETTERS ====================================================
+    public abstract boolean isConnected();
 }

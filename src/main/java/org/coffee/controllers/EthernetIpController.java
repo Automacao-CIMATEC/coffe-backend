@@ -10,10 +10,20 @@ import org.coffee.domain.enums.PlcDataType;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
+/*
+ OBSERVAÇÃO IMPORTANTE
+ A funcionalidade de comunicação via protocolo Ethernet/IP não está nativamente contida nessa aplicação JAVA
+ Existe um micro serviço Python que possui essa funcionalidade, o aplicação JAVA consome esse serviço via HTTP
+
+ Essa funcionalidade é exclusiva para comunicação com CLPs Rockwell CompactLogix, ControlLogix, MicroLogix
+ Essa funcionalidade NÃO irá funcionar em qualquer outro dispositivo, mesmo que seja compatível com o protocolo Ethernet/IP
+ Lembrete para testar essa funcionalidade com outro dispositivo Rockwell como IHM que fale o protocolo Ethernet/IP para ter certeza que só funciona com CLPs
+ */
+
 @RestController
 @RequestMapping("/ethernet-ip")
-@Tag(name = "Ethernet/IP", description = "Endpoints para comunicação através do protocolo Ethernet/IP (Exclusivo para comunicação com CLPs)")
-public class RockwellController extends BasePlcController {
+@Tag(name = "Ethernet/IP", description = "Endpoints para comunicação através do protocolo Ethernet/IP (Exclusivo para comunicação com CLPs CompactLogix, ControlLogix e MicroLogix)")
+public class EthernetIpController extends BasePlcController {
 
     @GetMapping("/read")
     @Operation(summary = "Leitura de uma variável através do protocolo Ethernet/IP")
@@ -37,7 +47,7 @@ public class RockwellController extends BasePlcController {
                 HttpMethod.POST);
     }
 
-    @GetMapping("/write")
+    @PostMapping("/write") // VERIFICAR SE ESTÁ FUNCIONANDO APÓS ALTERAR PARA POST
     @Operation(summary = "Escrita de uma variável através do protocolo Ethernet/IP")
     @ApiResponse(responseCode = "200", description = "Variável escrita com sucesso")
     public ExampleMessageDto writeRockwell(
