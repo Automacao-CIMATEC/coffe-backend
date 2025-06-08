@@ -24,7 +24,7 @@ public class OpcUaProtocol extends AbstractProtocol {
     @Override
     public void openConnection() {
         try {
-            String endpointUrl = "opc.tcp://" + getM_ip() + ":" + getM_port();
+            String endpointUrl = "opc.tcp://" + getIp() + ":" + getPort();
             client = OpcUaClient.create(endpointUrl);
             client.connect().get();
             setConnected(true);

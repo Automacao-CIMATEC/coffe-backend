@@ -8,8 +8,8 @@ public abstract class AbstractProtocol
     /**
      * ATTRIBUTES:
      */
-    public String m_ip;    // IP address of protocol instance
-    private int m_port;  // IP Port of protocol instance
+    protected String ip;    // IP address of protocol instance
+    protected int port;  // IP Port of protocol instance
 
     /**
      * METHODS:
@@ -22,8 +22,8 @@ public abstract class AbstractProtocol
      */
     public AbstractProtocol(String ip, int port)
     {
-        this.m_ip = ip;
-        this.m_port = port;
+        this.ip = ip;
+        this.port = port;
     }
 
     /**
@@ -94,26 +94,26 @@ public abstract class AbstractProtocol
      * GETTERS and SETTERS
      */
 
-    /**< Encapsulation for 'm_ip' */
-    public void setM_ip(String m_ip)
+    /**< Encapsulation for 'ip' */
+    public void setIp(String ip)
     {
-        this.m_ip = m_ip;
+        this.ip = ip;
     }
-    /**< Encapsulation for 'm_ip' */
-    public String getM_ip()
+    /**< Encapsulation for 'ip' */
+    public String getIp()
     {
-        return m_ip;
+        return ip;
     }
 
-    /**< Encapsulation for 'm_port' */
-    public int getM_port()
+    /**< Encapsulation for 'port' */
+    public int getPort()
     {
-        return m_port;
+        return port;
     }
-    /**< Encapsulation for 'm_port' */
-    public void setM_port(int m_port)
+    /**< Encapsulation for 'port' */
+    public void setPort(int port)
     {
-        this.m_port = m_port;
+        this.port = port;
     }
 
     public abstract String readDataString(int startingAddress, int registerCount);

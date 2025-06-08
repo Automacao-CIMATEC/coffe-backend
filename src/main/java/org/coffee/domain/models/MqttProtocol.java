@@ -36,7 +36,7 @@ public class MqttProtocol extends AbstractProtocol implements MqttCallback {
     @Override
     public void openConnection() {
         try {
-            String brokerUrl = "tcp://" + getM_ip() + ":" + getM_port();
+            String brokerUrl = "tcp://" + getIp() + ":" + getPort();
             MemoryPersistence persistence = new MemoryPersistence();
 
             client = new MqttClient(brokerUrl, clientId, persistence);

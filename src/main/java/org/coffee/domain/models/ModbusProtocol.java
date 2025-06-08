@@ -26,14 +26,14 @@ public class ModbusProtocol extends AbstractProtocol {
     @Override
     public void openConnection() {
         try {
-            ModbusTcpMasterConfig config = new ModbusTcpMasterConfig.Builder(getM_ip())
-                    .setPort(getM_port())
+            ModbusTcpMasterConfig config = new ModbusTcpMasterConfig.Builder(getIp())
+                    .setPort(getPort())
                     .build();
 
             m_server = new ModbusTcpMaster(config);
             m_server.connect().get();
             setConnected(true);
-            System.out.println("Connected to Controller at " + getM_ip() + ":" + getM_port());
+            System.out.println("Connected to Controller at " + getIp() + ":" + getPort());
         } catch (Exception e) {
             System.err.println("Connection error: " + e.getMessage());
             setConnected(false);
