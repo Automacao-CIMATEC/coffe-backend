@@ -6,3 +6,6 @@ target/classes/org/coffee/controllers/MessageController.class
 *.lst
 *.lst
 *.class
+*.jar
+*/target
+/target
