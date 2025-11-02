@@ -10,7 +10,6 @@ public class Plc {
     private Long id;
     private String name;
     private String ip;
-    private Integer port;
     private String manufacturer;
     private String model;
     private String description;
@@ -22,12 +21,11 @@ public class Plc {
     }
 
     // Construtor completo
-    public Plc(Long id, String name, String ip, Integer port, String manufacturer,
+    public Plc(Long id, String name, String ip, String manufacturer,
                String model, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.ip = ip;
-        this.port = port;
         this.manufacturer = manufacturer;
         this.model = model;
         this.description = description;
@@ -36,10 +34,9 @@ public class Plc {
     }
 
     // Construtor sem ID (para criacao)
-    public Plc(String name, String ip, Integer port) {
+    public Plc(String name, String ip) {
         this.name = name;
         this.ip = ip;
-        this.port = port;
     }
 
     // Metodos de logica de negocio
@@ -63,24 +60,6 @@ public class Plc {
         }
         String[] parts = this.ip.split("\\.");
         return parts.length == 4;
-    }
-
-    /**
-     * Verifica se a porta e valida
-     * @return true se a porta esta entre 1 e 65535
-     */
-    public boolean hasValidPort() {
-        return this.port != null &&
-                this.port > 0 &&
-                this.port <= 65535;
-    }
-
-    /**
-     * Retorna a conexao formatada
-     * @return string no formato ip:porta
-     */
-    public String getConnectionString() {
-        return this.ip + ":" + this.port;
     }
 
     // Getters e Setters
@@ -107,14 +86,6 @@ public class Plc {
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
     }
 
     public String getManufacturer() {
@@ -163,7 +134,6 @@ public class Plc {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", ip='" + ip + '\'' +
-                ", port=" + port +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", model='" + model + '\'' +
                 ", description='" + description + '\'' +

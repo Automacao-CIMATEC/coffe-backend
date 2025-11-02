@@ -41,6 +41,10 @@ public class VariableOpcUaService {
             throw new RuntimeException("NodeId invalido");
         }
 
+        if (!variable.hasValidPort()) {
+            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
+        }
+
         if (!variable.hasValidNamespaceIndex()) {
             throw new RuntimeException("Namespace index invalido");
         }
@@ -77,6 +81,10 @@ public class VariableOpcUaService {
 
         if (variable.getNodeId() != null && variable.getNodeId().trim().isEmpty()) {
             throw new RuntimeException("NodeId invalido");
+        }
+
+        if (variable.getPort() != null && !variable.hasValidPort()) {
+            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
         }
 
         if (variable.getNamespaceIndex() != null && variable.getNamespaceIndex() < 0) {

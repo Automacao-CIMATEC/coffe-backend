@@ -14,6 +14,7 @@ public class VariableOpcUa {
     private String description;
     private Long deviceId;
     private String nodeId;
+    private Integer port;
     private Integer namespaceIndex;
     private String nodeIdPrefix;
     private LocalDateTime createdAt;
@@ -25,7 +26,7 @@ public class VariableOpcUa {
 
     // Construtor completo
     public VariableOpcUa(Long id, String name, String dataType, String unit, String description,
-                         Long deviceId, String nodeId, Integer namespaceIndex, String nodeIdPrefix,
+                         Long deviceId, String nodeId, Integer port, Integer namespaceIndex, String nodeIdPrefix,
                          LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -34,6 +35,7 @@ public class VariableOpcUa {
         this.description = description;
         this.deviceId = deviceId;
         this.nodeId = nodeId;
+        this.port = port;
         this.namespaceIndex = namespaceIndex;
         this.nodeIdPrefix = nodeIdPrefix;
         this.createdAt = createdAt;
@@ -41,11 +43,12 @@ public class VariableOpcUa {
     }
 
     // Construtor sem ID (para criacao)
-    public VariableOpcUa(String name, String dataType, Long deviceId, String nodeId, Integer namespaceIndex) {
+    public VariableOpcUa(String name, String dataType, Long deviceId, String nodeId, Integer port, Integer namespaceIndex) {
         this.name = name;
         this.dataType = dataType;
         this.deviceId = deviceId;
         this.nodeId = nodeId;
+        this.port = port;
         this.namespaceIndex = namespaceIndex;
     }
 
@@ -66,6 +69,16 @@ public class VariableOpcUa {
      */
     public boolean hasValidNodeId() {
         return this.nodeId != null && !this.nodeId.trim().isEmpty();
+    }
+
+    /**
+     * Verifica se a porta e valida
+     * @return true se a porta esta entre 1 e 65535
+     */
+    public boolean hasValidPort() {
+        return this.port != null &&
+                this.port > 0 &&
+                this.port <= 65535;
     }
 
     /**
@@ -144,6 +157,14 @@ public class VariableOpcUa {
         this.nodeId = nodeId;
     }
 
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
     public Integer getNamespaceIndex() {
         return namespaceIndex;
     }
@@ -185,6 +206,7 @@ public class VariableOpcUa {
                 ", unit='" + unit + '\'' +
                 ", deviceId=" + deviceId +
                 ", nodeId='" + nodeId + '\'' +
+                ", port=" + port +
                 ", namespaceIndex=" + namespaceIndex +
                 ", nodeIdPrefix='" + nodeIdPrefix + '\'' +
                 '}';

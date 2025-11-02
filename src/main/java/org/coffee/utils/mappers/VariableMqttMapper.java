@@ -24,6 +24,7 @@ public class VariableMqttMapper {
                 table.getDescription(),
                 table.getDevice() != null ? table.getDevice().getId() : null,
                 table.getTopic(),
+                table.getPort(),
                 table.getQos(),
                 table.getClientId(),
                 table.getRetained(),
@@ -47,6 +48,7 @@ public class VariableMqttMapper {
         table.setUnit(dto.getUnit());
         table.setDescription(dto.getDescription());
         table.setTopic(dto.getTopic());
+        table.setPort(dto.getPort());
         table.setQos(dto.getQos());
         table.setClientId(dto.getClientId());
         table.setRetained(dto.getRetained());
@@ -99,6 +101,9 @@ public class VariableMqttMapper {
         }
         if (dto.getTopic() != null) {
             table.setTopic(dto.getTopic());
+        }
+        if (dto.getPort() != null) {
+            table.setPort(dto.getPort());
         }
         if (dto.getQos() != null) {
             table.setQos(dto.getQos());

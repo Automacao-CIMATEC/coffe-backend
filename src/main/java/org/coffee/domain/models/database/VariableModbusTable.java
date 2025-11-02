@@ -12,6 +12,9 @@ public class VariableModbusTable extends VariableTable {
     @Column(name = "address", nullable = false)
     private Integer address;
 
+    @Column(name = "port", nullable = false)
+    private Integer port;
+
     @Column(name = "unit_id", nullable = false)
     private Integer unitId;
 
@@ -25,9 +28,10 @@ public class VariableModbusTable extends VariableTable {
 
     // Construtor auxiliar
     public VariableModbusTable(String name, String dataType, DeviceTable device,
-                               Integer address, Integer unitId, String registerType) {
+                               Integer address, Integer port, Integer unitId, String registerType) {
         super(name, dataType, device);
         this.address = address;
+        this.port = port;
         this.unitId = unitId;
         this.registerType = registerType;
     }
@@ -40,6 +44,14 @@ public class VariableModbusTable extends VariableTable {
 
     public void setAddress(Integer address) {
         this.address = address;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public Integer getUnitId() {

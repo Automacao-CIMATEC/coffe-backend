@@ -12,6 +12,9 @@ public class VariableOpcUaTable extends VariableTable {
     @Column(name = "node_id", nullable = false, length = 255)
     private String nodeId;
 
+    @Column(name = "port", nullable = false)
+    private Integer port;
+
     @Column(name = "namespace_index", nullable = false)
     private Integer namespaceIndex;
 
@@ -25,9 +28,10 @@ public class VariableOpcUaTable extends VariableTable {
 
     // Construtor auxiliar
     public VariableOpcUaTable(String name, String dataType, DeviceTable device,
-                              String nodeId, Integer namespaceIndex, String nodeIdPrefix) {
+                              String nodeId, Integer port, Integer namespaceIndex, String nodeIdPrefix) {
         super(name, dataType, device);
         this.nodeId = nodeId;
+        this.port = port;
         this.namespaceIndex = namespaceIndex;
         this.nodeIdPrefix = nodeIdPrefix;
     }
@@ -40,6 +44,14 @@ public class VariableOpcUaTable extends VariableTable {
 
     public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public Integer getNamespaceIndex() {

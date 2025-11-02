@@ -41,6 +41,10 @@ public class VariableModbusService {
             throw new RuntimeException("Endereco invalido");
         }
 
+        if (!variable.hasValidPort()) {
+            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
+        }
+
         if (!variable.hasValidRegisterType()) {
             throw new RuntimeException("Tipo de registrador invalido. Use: HOLDING, INPUT, COIL ou DISCRETE");
         }
@@ -77,6 +81,10 @@ public class VariableModbusService {
 
         if (variable.getAddress() != null && variable.getAddress() < 0) {
             throw new RuntimeException("Endereco invalido");
+        }
+
+        if (variable.getPort() != null && !variable.hasValidPort()) {
+            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
         }
 
         if (variable.getRegisterType() != null && !variable.hasValidRegisterType()) {

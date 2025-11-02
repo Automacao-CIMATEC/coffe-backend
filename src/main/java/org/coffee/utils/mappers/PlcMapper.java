@@ -20,7 +20,6 @@ public class PlcMapper {
                 table.getId(),
                 table.getName(),
                 table.getIp(),
-                table.getPort(),
                 table.getManufacturer(),
                 table.getModel(),
                 table.getDescription(),
@@ -39,7 +38,6 @@ public class PlcMapper {
         table.setId(dto.getId());
         table.setName(dto.getName());
         table.setIp(dto.getIp());
-        table.setPort(dto.getPort());
         table.setManufacturer(dto.getManufacturer());
         table.setModel(dto.getModel());
         table.setDescription(dto.getDescription());
@@ -83,9 +81,6 @@ public class PlcMapper {
         }
         if (dto.getIp() != null) {
             table.setIp(dto.getIp());
-        }
-        if (dto.getPort() != null) {
-            table.setPort(dto.getPort());
         }
         if (dto.getManufacturer() != null) {
             table.setManufacturer(dto.getManufacturer());

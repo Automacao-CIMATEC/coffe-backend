@@ -14,6 +14,7 @@ public class VariableMqtt {
     private String description;
     private Long deviceId;
     private String topic;
+    private Integer port;
     private Integer qos;
     private String clientId;
     private Boolean retained;
@@ -26,7 +27,7 @@ public class VariableMqtt {
 
     // Construtor completo
     public VariableMqtt(Long id, String name, String dataType, String unit, String description,
-                        Long deviceId, String topic, Integer qos, String clientId, Boolean retained,
+                        Long deviceId, String topic, Integer port, Integer qos, String clientId, Boolean retained,
                         LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -35,6 +36,7 @@ public class VariableMqtt {
         this.description = description;
         this.deviceId = deviceId;
         this.topic = topic;
+        this.port = port;
         this.qos = qos;
         this.clientId = clientId;
         this.retained = retained;
@@ -43,11 +45,12 @@ public class VariableMqtt {
     }
 
     // Construtor sem ID (para criacao)
-    public VariableMqtt(String name, String dataType, Long deviceId, String topic, Integer qos) {
+    public VariableMqtt(String name, String dataType, Long deviceId, String topic, Integer port, Integer qos) {
         this.name = name;
         this.dataType = dataType;
         this.deviceId = deviceId;
         this.topic = topic;
+        this.port = port;
         this.qos = qos;
         this.retained = false;
     }
@@ -69,6 +72,16 @@ public class VariableMqtt {
      */
     public boolean hasValidTopic() {
         return this.topic != null && !this.topic.trim().isEmpty();
+    }
+
+    /**
+     * Verifica se a porta e valida
+     * @return true se a porta esta entre 1 e 65535
+     */
+    public boolean hasValidPort() {
+        return this.port != null &&
+                this.port > 0 &&
+                this.port <= 65535;
     }
 
     /**
@@ -147,6 +160,14 @@ public class VariableMqtt {
         this.topic = topic;
     }
 
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
     public Integer getQos() {
         return qos;
     }
@@ -196,6 +217,7 @@ public class VariableMqtt {
                 ", unit='" + unit + '\'' +
                 ", deviceId=" + deviceId +
                 ", topic='" + topic + '\'' +
+                ", port=" + port +
                 ", qos=" + qos +
                 ", clientId='" + clientId + '\'' +
                 ", retained=" + retained +

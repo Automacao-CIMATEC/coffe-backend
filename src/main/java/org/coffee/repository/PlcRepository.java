@@ -21,7 +21,4 @@ public interface PlcRepository extends JpaRepository<PlcTable, Long> {
 
     // Verifica se existe um PLC com o nome informado
     boolean existsByName(String name);
-
-    // Verifica se existe um PLC com IP e porta especificos
-    boolean existsByIpAndPort(String ip, Integer port);
 }

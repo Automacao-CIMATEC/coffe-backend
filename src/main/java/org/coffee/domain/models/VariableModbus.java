@@ -14,6 +14,7 @@ public class VariableModbus {
     private String description;
     private Long deviceId;
     private Integer address;
+    private Integer port;
     private Integer unitId;
     private String registerType;
     private LocalDateTime createdAt;
@@ -25,7 +26,7 @@ public class VariableModbus {
 
     // Construtor completo
     public VariableModbus(Long id, String name, String dataType, String unit, String description,
-                          Long deviceId, Integer address, Integer unitId, String registerType,
+                          Long deviceId, Integer address, Integer port, Integer unitId, String registerType,
                           LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
@@ -34,6 +35,7 @@ public class VariableModbus {
         this.description = description;
         this.deviceId = deviceId;
         this.address = address;
+        this.port = port;
         this.unitId = unitId;
         this.registerType = registerType;
         this.createdAt = createdAt;
@@ -41,11 +43,12 @@ public class VariableModbus {
     }
 
     // Construtor sem ID (para criacao)
-    public VariableModbus(String name, String dataType, Long deviceId, Integer address, Integer unitId, String registerType) {
+    public VariableModbus(String name, String dataType, Long deviceId, Integer address, Integer port, Integer unitId, String registerType) {
         this.name = name;
         this.dataType = dataType;
         this.deviceId = deviceId;
         this.address = address;
+        this.port = port;
         this.unitId = unitId;
         this.registerType = registerType;
     }
@@ -67,6 +70,16 @@ public class VariableModbus {
      */
     public boolean hasValidAddress() {
         return this.address != null && this.address >= 0;
+    }
+
+    /**
+     * Verifica se a porta e valida
+     * @return true se a porta esta entre 1 e 65535
+     */
+    public boolean hasValidPort() {
+        return this.port != null &&
+                this.port > 0 &&
+                this.port <= 65535;
     }
 
     /**
@@ -140,6 +153,14 @@ public class VariableModbus {
         this.address = address;
     }
 
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
     public Integer getUnitId() {
         return unitId;
     }
@@ -181,6 +202,7 @@ public class VariableModbus {
                 ", unit='" + unit + '\'' +
                 ", deviceId=" + deviceId +
                 ", address=" + address +
+                ", port=" + port +
                 ", unitId=" + unitId +
                 ", registerType='" + registerType + '\'' +
                 '}';

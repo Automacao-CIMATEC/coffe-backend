@@ -24,6 +24,7 @@ public class VariableOpcUaMapper {
                 table.getDescription(),
                 table.getDevice() != null ? table.getDevice().getId() : null,
                 table.getNodeId(),
+                table.getPort(),
                 table.getNamespaceIndex(),
                 table.getNodeIdPrefix(),
                 table.getCreatedAt(),
@@ -46,6 +47,7 @@ public class VariableOpcUaMapper {
         table.setUnit(dto.getUnit());
         table.setDescription(dto.getDescription());
         table.setNodeId(dto.getNodeId());
+        table.setPort(dto.getPort());
         table.setNamespaceIndex(dto.getNamespaceIndex());
         table.setNodeIdPrefix(dto.getNodeIdPrefix());
         table.setCreatedAt(dto.getCreatedAt());
@@ -97,6 +99,9 @@ public class VariableOpcUaMapper {
         }
         if (dto.getNodeId() != null) {
             table.setNodeId(dto.getNodeId());
+        }
+        if (dto.getPort() != null) {
+            table.setPort(dto.getPort());
         }
         if (dto.getNamespaceIndex() != null) {
             table.setNamespaceIndex(dto.getNamespaceIndex());

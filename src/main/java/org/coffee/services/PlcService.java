@@ -35,18 +35,9 @@ public class PlcService {
             throw new RuntimeException("IP invalido");
         }
 
-        if (!plc.hasValidPort()) {
-            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
-        }
-
         // Verifica se o nome ja existe
         if (plcRepository.existsByName(plc.getName())) {
             throw new RuntimeException("PLC com este nome ja existe no sistema");
-        }
-
-        // Verifica se ja existe um PLC com mesmo IP e porta
-        if (plcRepository.existsByIpAndPort(plc.getIp(), plc.getPort())) {
-            throw new RuntimeException("Ja existe um PLC com este IP e porta");
         }
 
         // Converte DTO para entidade
@@ -74,26 +65,10 @@ public class PlcService {
             throw new RuntimeException("IP invalido");
         }
 
-        if (plc.getPort() != null && !plc.hasValidPort()) {
-            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
-        }
-
         // Verifica se o nome esta sendo alterado e se ja existe
         if (plc.getName() != null && !existingTable.getName().equals(plc.getName())) {
             if (plcRepository.existsByName(plc.getName())) {
                 throw new RuntimeException("Nome ja esta em uso por outro PLC");
-            }
-        }
-
-        // Verifica se IP e porta estao sendo alterados e se ja existem
-        if (plc.getIp() != null || plc.getPort() != null) {
-            String newIp = plc.getIp() != null ? plc.getIp() : existingTable.getIp();
-            Integer newPort = plc.getPort() != null ? plc.getPort() : existingTable.getPort();
-
-            if (!newIp.equals(existingTable.getIp()) || !newPort.equals(existingTable.getPort())) {
-                if (plcRepository.existsByIpAndPort(newIp, newPort)) {
-                    throw new RuntimeException("Ja existe um PLC com este IP e porta");
-                }
             }
         }
 

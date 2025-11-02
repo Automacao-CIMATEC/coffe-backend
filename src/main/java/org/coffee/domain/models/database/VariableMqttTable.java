@@ -12,6 +12,9 @@ public class VariableMqttTable extends VariableTable {
     @Column(name = "topic", nullable = false, length = 255)
     private String topic;
 
+    @Column(name = "port", nullable = false)
+    private Integer port;
+
     @Column(name = "qos", nullable = false)
     private Integer qos;
 
@@ -28,9 +31,10 @@ public class VariableMqttTable extends VariableTable {
 
     // Construtor auxiliar
     public VariableMqttTable(String name, String dataType, DeviceTable device,
-                             String topic, Integer qos, String clientId) {
+                             String topic, Integer port, Integer qos, String clientId) {
         super(name, dataType, device);
         this.topic = topic;
+        this.port = port;
         this.qos = qos;
         this.clientId = clientId;
         this.retained = false;
@@ -44,6 +48,14 @@ public class VariableMqttTable extends VariableTable {
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public Integer getQos() {

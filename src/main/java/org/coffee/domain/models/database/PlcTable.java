@@ -22,9 +22,6 @@ public class PlcTable {
     @Column(name = "ip", nullable = false, length = 45)
     private String ip;
 
-    @Column(name = "port", nullable = false)
-    private Integer port;
-
     @Column(name = "manufacturer", length = 100)
     private String manufacturer;
 
@@ -49,10 +46,9 @@ public class PlcTable {
     }
 
     // Construtor auxiliar
-    public PlcTable(String name, String ip, Integer port) {
+    public PlcTable(String name, String ip) {
         this.name = name;
         this.ip = ip;
-        this.port = port;
     }
 
     // Metodos de lifecycle do JPA
@@ -91,14 +87,6 @@ public class PlcTable {
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
     }
 
     public String getManufacturer() {

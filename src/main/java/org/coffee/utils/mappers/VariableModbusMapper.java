@@ -24,6 +24,7 @@ public class VariableModbusMapper {
                 table.getDescription(),
                 table.getDevice() != null ? table.getDevice().getId() : null,
                 table.getAddress(),
+                table.getPort(),
                 table.getUnitId(),
                 table.getRegisterType(),
                 table.getCreatedAt(),
@@ -46,6 +47,7 @@ public class VariableModbusMapper {
         table.setUnit(dto.getUnit());
         table.setDescription(dto.getDescription());
         table.setAddress(dto.getAddress());
+        table.setPort(dto.getPort());
         table.setUnitId(dto.getUnitId());
         table.setRegisterType(dto.getRegisterType());
         table.setCreatedAt(dto.getCreatedAt());
@@ -97,6 +99,9 @@ public class VariableModbusMapper {
         }
         if (dto.getAddress() != null) {
             table.setAddress(dto.getAddress());
+        }
+        if (dto.getPort() != null) {
+            table.setPort(dto.getPort());
         }
         if (dto.getUnitId() != null) {
             table.setUnitId(dto.getUnitId());

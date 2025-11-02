@@ -41,6 +41,10 @@ public class VariableMqttService {
             throw new RuntimeException("Topico invalido");
         }
 
+        if (!variable.hasValidPort()) {
+            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
+        }
+
         if (!variable.hasValidQos()) {
             throw new RuntimeException("QoS invalido. Deve estar entre 0 e 2");
         }
@@ -77,6 +81,10 @@ public class VariableMqttService {
 
         if (variable.getTopic() != null && variable.getTopic().trim().isEmpty()) {
             throw new RuntimeException("Topico invalido");
+        }
+
+        if (variable.getPort() != null && !variable.hasValidPort()) {
+            throw new RuntimeException("Porta invalida. Deve estar entre 1 e 65535");
         }
 
         if (variable.getQos() != null && !variable.hasValidQos()) {
