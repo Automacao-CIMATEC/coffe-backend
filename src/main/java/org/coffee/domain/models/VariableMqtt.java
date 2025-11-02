@@ -13,6 +13,7 @@ public class VariableMqtt {
     private String unit;
     private String description;
     private Long deviceId;
+    private String brokerIp;
     private String topic;
     private Integer port;
     private Integer qos;
@@ -27,14 +28,15 @@ public class VariableMqtt {
 
     // Construtor completo
     public VariableMqtt(Long id, String name, String dataType, String unit, String description,
-                        Long deviceId, String topic, Integer port, Integer qos, String clientId, Boolean retained,
-                        LocalDateTime createdAt, LocalDateTime updatedAt) {
+                        Long deviceId, String brokerIp, String topic, Integer port, Integer qos,
+                        String clientId, Boolean retained, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.dataType = dataType;
         this.unit = unit;
         this.description = description;
         this.deviceId = deviceId;
+        this.brokerIp = brokerIp;
         this.topic = topic;
         this.port = port;
         this.qos = qos;
@@ -45,10 +47,12 @@ public class VariableMqtt {
     }
 
     // Construtor sem ID (para criacao)
-    public VariableMqtt(String name, String dataType, Long deviceId, String topic, Integer port, Integer qos) {
+    public VariableMqtt(String name, String dataType, Long deviceId, String brokerIp,
+                        String topic, Integer port, Integer qos) {
         this.name = name;
         this.dataType = dataType;
         this.deviceId = deviceId;
+        this.brokerIp = brokerIp;
         this.topic = topic;
         this.port = port;
         this.qos = qos;
@@ -64,6 +68,14 @@ public class VariableMqtt {
     public boolean hasValidName() {
         return this.name != null &&
                 this.name.trim().length() >= 2;
+    }
+
+    /**
+     * Verifica se o broker IP e valido
+     * @return true se broker IP nao e nulo ou vazio
+     */
+    public boolean hasValidBrokerIp() {
+        return this.brokerIp != null && !this.brokerIp.trim().isEmpty();
     }
 
     /**
@@ -152,6 +164,14 @@ public class VariableMqtt {
         this.deviceId = deviceId;
     }
 
+    public String getBrokerIp() {
+        return brokerIp;
+    }
+
+    public void setBrokerIp(String brokerIp) {
+        this.brokerIp = brokerIp;
+    }
+
     public String getTopic() {
         return topic;
     }
@@ -216,6 +236,7 @@ public class VariableMqtt {
                 ", dataType='" + dataType + '\'' +
                 ", unit='" + unit + '\'' +
                 ", deviceId=" + deviceId +
+                ", brokerIp='" + brokerIp + '\'' +
                 ", topic='" + topic + '\'' +
                 ", port=" + port +
                 ", qos=" + qos +

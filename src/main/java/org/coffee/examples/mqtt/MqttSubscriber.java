@@ -13,7 +13,7 @@ public class MqttSubscriber implements MqttCallback {
 
     public void subscribe() {
         String broker = "tcp://localhost:1884";
-        String topic = "test";
+        String topic = "var_1";
         String clientId = "JavaSubscriber_" + System.currentTimeMillis();
 
         try {

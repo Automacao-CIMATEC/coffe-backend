@@ -9,6 +9,9 @@ public class VariableMqttTable extends VariableTable {
     // Representa uma variavel especifica para protocolo MQTT
     // Herda campos comuns de VariableTable e adiciona campos especificos do MQTT
 
+    @Column(name = "broker_ip", nullable = false, length = 50)
+    private String brokerIp;
+
     @Column(name = "topic", nullable = false, length = 255)
     private String topic;
 
@@ -31,8 +34,9 @@ public class VariableMqttTable extends VariableTable {
 
     // Construtor auxiliar
     public VariableMqttTable(String name, String dataType, DeviceTable device,
-                             String topic, Integer port, Integer qos, String clientId) {
+                             String brokerIp, String topic, Integer port, Integer qos, String clientId) {
         super(name, dataType, device);
+        this.brokerIp = brokerIp;
         this.topic = topic;
         this.port = port;
         this.qos = qos;
@@ -41,6 +45,14 @@ public class VariableMqttTable extends VariableTable {
     }
 
     // Getters e Setters
+
+    public String getBrokerIp() {
+        return brokerIp;
+    }
+
+    public void setBrokerIp(String brokerIp) {
+        this.brokerIp = brokerIp;
+    }
 
     public String getTopic() {
         return topic;

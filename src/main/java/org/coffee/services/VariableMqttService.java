@@ -37,6 +37,10 @@ public class VariableMqttService {
             throw new RuntimeException("Nome da variavel invalido. Deve ter pelo menos 2 caracteres");
         }
 
+        if (!variable.hasValidBrokerIp()) {
+            throw new RuntimeException("Broker IP invalido");
+        }
+
         if (!variable.hasValidTopic()) {
             throw new RuntimeException("Topico invalido");
         }
@@ -77,6 +81,10 @@ public class VariableMqttService {
         // Validacoes de negocio
         if (variable.getName() != null && variable.getName().trim().length() < 2) {
             throw new RuntimeException("Nome invalido. Deve ter pelo menos 2 caracteres");
+        }
+
+        if (variable.getBrokerIp() != null && variable.getBrokerIp().trim().isEmpty()) {
+            throw new RuntimeException("Broker IP invalido");
         }
 
         if (variable.getTopic() != null && variable.getTopic().trim().isEmpty()) {
