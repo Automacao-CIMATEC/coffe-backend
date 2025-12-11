@@ -30,19 +30,12 @@ José Santos Damasceno
 
 ## Instalação
 
-### Windows
-
 Para instalação do PostgreSQL:
 - Baixar e instalar o PostgreSQL 16.x no site oficial
     - Qualquer subversão funciona, mas é recomendado a mais recente
- 
-### Linux
-Para instalação do PostgreSQL:
-```
-Inserir comando
-```
 
 ### Após a instalação do banco, em qualquer sistema operacional:
+### Recomendado o uso de Intelij como IDE e JAVA 21
 
 Para a instalação limpa via Maven:
 ```
