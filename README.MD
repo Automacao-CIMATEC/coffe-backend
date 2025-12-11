@@ -1,12 +1,58 @@
-Este repositório será usado para o desenvolvimento do serviço de comunicação com CLPs e outros controladores.
+## Sobre
+Este repositório contém o Back-end do sistema COFFE para gestão de ativos.
 
-Este serviço é uma aplicação JAVA 21 com Maven, utilizando Spring Boot e OpenAPI para o desenvolvimento da API.
+O coffe-backend é uma API em JAVA com Maven que realiza o controle e monitoramento de ativos e controladores, bem como interage com o coffe-backend-python e o coffe-frontend
 
-O repositório já conta com exemplos para os endpoints da API, siga o modelo apresentado.
+O coffe-backend permite as seguintes funcionalidades:
+- API RESTful e Endpoints para todas as funcionalidades com SpringBoot
+- Integração com banco de dados via ORM com Hibernate
+- Banco de dados relacional com PostgreSQL
+- Gerenciamento de ativos
+- Comunicação com CLPs
+  - Modbus/TCP
+  - MQTT
+  - OPC-UA
 
-Para cada protocolo a ser desenvolvido, crie uma branch separada e trabalhe nela.
+## Autores
 
-Faça commits de forma organizada e padronizada, na pasta commit-example existem instruções de como realizar os commits
+[Davih de Andrade Machado Borges Santos](https://github.com/DavihDeAndrade)
 
-URL para acessar o Swagger: http://localhost:8080/swagger-ui/index.html
-OBS: Acredito que esteja bloqueado para acesso remoto, logo atualmente só funciona para acesso local.
+[Pedro Quadro de Freitas](https://github.com/PQFreitas)
+
+[Gabriel Trindade Santana](https://github.com/GabrielTrindade31)
+
+Davi Muniz da Silva
+
+José Santos Damasceno
+
+## Responsável
+[Davih de Andrade Machado Borges Santos](https://github.com/DavihDeAndrade)
+
+## Instalação
+
+### Windows
+
+Para instalação do PostgreSQL:
+- Baixar e instalar o PostgreSQL 16.x no site oficial
+    - Qualquer subversão funciona, mas é recomendado a mais recente
+ 
+### Linux
+Para instalação do PostgreSQL:
+```
+Inserir comando
+```
+
+### Após a instalação do banco, em qualquer sistema operacional:
+
+Para a instalação limpa via Maven:
+```
+mvn clean install
+```
+
+## Execução
+
+```
+spring-boot:run
+```
+
+
