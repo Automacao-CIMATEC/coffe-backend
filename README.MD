@@ -48,4 +48,16 @@ mvn clean install
 spring-boot:run
 ```
 
+## Uso
 
+### Para acessar a documentação da API, acesse o Swagger a partir da URL:
+
+```
+http://localhost:8080/swagger-ui/index.html#/
+```
+
+Toda a documentação de uso, funcionalidades, tipagem, validação e etc estará no Swagger.
+
+Para encontrar as classes e métodos responsáveis por cada funcionalidade, utilize os controllers da API para encontrar o que precisa.
+
+Em caso de dúvidas, bugs ou similares, abra um Issue ou entre em contato com [Davih de Andrade](https://github.com/DavihDeAndrade).
