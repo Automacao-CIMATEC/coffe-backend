@@ -32,6 +32,7 @@ José Santos Damasceno
 
 ## Responsáveis
 [Davih de Andrade Machado Borges Santos](https://github.com/DavihDeAndrade)
+
 José Marcelo de Assis Santos
 
 ## Instalação
