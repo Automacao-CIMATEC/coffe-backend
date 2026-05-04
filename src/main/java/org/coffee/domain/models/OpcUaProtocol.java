@@ -4,6 +4,9 @@ import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.coffee.domain.abstracts.AbstractProtocol;
+import org.eclipse.milo.opcua.stack.core.UaException;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 
 public class OpcUaProtocol extends AbstractProtocol {
     private OpcUaClient client;
@@ -198,11 +201,36 @@ public class OpcUaProtocol extends AbstractProtocol {
 
         try {
             NodeId node = new NodeId(namespaceIndex, nodeIdPrefix + nodeId);
-            DataValue value = new DataValue(new Variant(data), null, null);
+
+            // Le o valor atual para determinar o tipo de dado esperado pelo servidor
+            DataValue currentValue = client.readValue(0, TimestampsToReturn.Both, node).get();
+            Object currentData = currentValue.getValue().getValue();
+
+            // Cria um Variant com o tipo correto baseado no tipo atual do node
+            Variant variant;
+            if (currentData instanceof Short || currentData instanceof Byte) {
+                // Se o servidor espera Short ou Byte, converte para Short
+                variant = new Variant((short) data);
+            } else if (currentData instanceof UShort) {
+                // Se o servidor espera UShort (unsigned short)
+                variant = new Variant(UShort.valueOf(data));
+            } else if (currentData instanceof UInteger) {
+                // Se o servidor espera UInteger (unsigned integer)
+                variant = new Variant(UInteger.valueOf(data));
+            } else if (currentData instanceof Long) {
+                // Se o servidor espera Long
+                variant = new Variant((long) data);
+            } else {
+                // Default: usa Integer (int)
+                variant = new Variant(data);
+            }
+
+            DataValue value = new DataValue(variant, null, null);
             client.writeValue(node, value).get();
-            System.out.println("Successfully wrote INT to node: " + nodeId);
+            System.out.println("Successfully wrote INT to node: " + nodeId + " with type: " + variant.getValue().getClass().getSimpleName());
         } catch (Exception e) {
             System.err.println("Write int error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
