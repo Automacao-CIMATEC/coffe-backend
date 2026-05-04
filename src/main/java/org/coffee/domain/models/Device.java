@@ -6,16 +6,13 @@ public class Device {
 
     // Objeto de transferencia de dados (DTO)
     // Usado para logica de negocio e API
-    // Pode conter metodos auxiliares e validacoes
 
     private Long id;
-    private String deviceName;
-    private String deviceType;
-    private String ipAddress;
-    private Integer port;
-    private String protocol;
-    private String status;
-    private Boolean isActive;
+    private String name;
+    private String manufacturer;
+    private String description;
+    private Long plcId;
+    private Long protocolId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -24,91 +21,58 @@ public class Device {
     }
 
     // Construtor completo
-    public Device(Long id, String deviceName, String deviceType, String ipAddress,
-                  Integer port, String protocol, String status, Boolean isActive,
-                  LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Device(Long id, String name, String manufacturer, String description,
+                  Long plcId, Long protocolId, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.deviceName = deviceName;
-        this.deviceType = deviceType;
-        this.ipAddress = ipAddress;
-        this.port = port;
-        this.protocol = protocol;
-        this.status = status;
-        this.isActive = isActive;
+        this.name = name;
+        this.manufacturer = manufacturer;
+        this.description = description;
+        this.plcId = plcId;
+        this.protocolId = protocolId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    // Construtor simplificado
-    public Device(String deviceName, String deviceType, String protocol) {
-        this.deviceName = deviceName;
-        this.deviceType = deviceType;
-        this.protocol = protocol;
-        this.isActive = true;
-        this.status = "offline";
+    // Construtor sem ID (para criacao)
+    public Device(String name, Long plcId, Long protocolId) {
+        this.name = name;
+        this.plcId = plcId;
+        this.protocolId = protocolId;
     }
 
     // Metodos de logica de negocio
 
     /**
-     * Verifica se o dispositivo esta online
-     * @return true se status for "online"
+     * Verifica se o nome e valido
+     * @return true se o nome tem pelo menos 3 caracteres
      */
-    public boolean isOnline() {
-        return "online".equalsIgnoreCase(this.status);
+    public boolean hasValidName() {
+        return this.name != null &&
+                this.name.trim().length() >= 3;
     }
 
     /**
-     * Verifica se o dispositivo esta disponivel para uso
-     * @return true se esta ativo e online
+     * Verifica se o dispositivo tem PLC associado
+     * @return true se plcId nao e nulo
      */
-    public boolean isAvailable() {
-        return this.isActive != null &&
-                this.isActive &&
-                isOnline();
+    public boolean hasPlc() {
+        return this.plcId != null;
     }
 
     /**
-     * Retorna a URL completa de conexao
-     * @return URL no formato protocolo://ip:porta
+     * Verifica se o dispositivo tem protocolo associado
+     * @return true se protocolId nao e nulo
      */
-    public String getConnectionUrl() {
-        if (this.protocol == null || this.ipAddress == null) {
-            return "";
-        }
-
-        String url = this.protocol.toLowerCase() + "://" + this.ipAddress;
-
-        if (this.port != null) {
-            url += ":" + this.port;
-        }
-
-        return url;
+    public boolean hasProtocol() {
+        return this.protocolId != null;
     }
 
     /**
-     * Verifica se as configuracoes de rede sao validas
-     * @return true se IP e porta estao configurados
+     * Verifica se o dispositivo esta completamente configurado
+     * @return true se tem nome, PLC e protocolo
      */
-    public boolean hasValidNetworkConfig() {
-        return this.ipAddress != null &&
-                !this.ipAddress.isEmpty() &&
-                this.port != null &&
-                this.port > 0 &&
-                this.port <= 65535;
-    }
-
-    /**
-     * Verifica se o protocolo e suportado
-     * @return true se o protocolo e OPC-UA, Modbus ou MQTT
-     */
-    public boolean hasSupportedProtocol() {
-        if (this.protocol == null) return false;
-
-        String protocolUpper = this.protocol.toUpperCase();
-        return protocolUpper.equals("OPC-UA") ||
-                protocolUpper.equals("MODBUS") ||
-                protocolUpper.equals("MQTT");
+    public boolean isFullyConfigured() {
+        return hasValidName() && hasPlc() && hasProtocol();
     }
 
     // Getters e Setters
@@ -121,60 +85,44 @@ public class Device {
         this.id = id;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String getName() {
+        return name;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getDescription() {
+        return description;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Integer getPort() {
-        return port;
+    public Long getPlcId() {
+        return plcId;
     }
 
-    public void setPort(Integer port) {
-        this.port = port;
+    public void setPlcId(Long plcId) {
+        this.plcId = plcId;
     }
 
-    public String getProtocol() {
-        return protocol;
+    public Long getProtocolId() {
+        return protocolId;
     }
 
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setProtocolId(Long protocolId) {
+        this.protocolId = protocolId;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -197,13 +145,13 @@ public class Device {
     public String toString() {
         return "Device{" +
                 "id=" + id +
-                ", deviceName='" + deviceName + '\'' +
-                ", deviceType='" + deviceType + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", port=" + port +
-                ", protocol='" + protocol + '\'' +
-                ", status='" + status + '\'' +
-                ", isActive=" + isActive +
+                ", name='" + name + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", description='" + description + '\'' +
+                ", plcId=" + plcId +
+                ", protocolId=" + protocolId +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

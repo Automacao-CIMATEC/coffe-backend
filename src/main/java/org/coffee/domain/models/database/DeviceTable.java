@@ -2,38 +2,28 @@ package org.coffee.domain.models.database;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "devices")
+@Table(name = "device")
 public class DeviceTable {
 
-    // Representacao da tabela no banco de dados
-    // Apenas mapeamento JPA, sem logica de negocio
+    // Representa um dispositivo monitorado no sistema
+    // Cada dispositivo possui um PLC e um protocolo associado
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "device_name", nullable = false, length = 100)
-    private String deviceName;
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
 
-    @Column(name = "device_type", nullable = false, length = 50)
-    private String deviceType;
+    @Column(name = "manufacturer", length = 100)
+    private String manufacturer;
 
-    @Column(name = "ip_address", length = 45)
-    private String ipAddress;
-
-    @Column(name = "port")
-    private Integer port;
-
-    @Column(name = "protocol", length = 50)
-    private String protocol;
-
-    @Column(name = "status", length = 20)
-    private String status;
-
-    @Column(name = "is_active")
-    private Boolean isActive;
+    @Column(name = "description", length = 255)
+    private String description;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -41,10 +31,32 @@ public class DeviceTable {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Construtor padrao
+    // Relacionamento Many-to-One com PLC
+    // Um dispositivo pertence a apenas um PLC
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plc_id", nullable = false)
+    private PlcTable plc;
+
+    // Relacionamento Many-to-One com Protocol
+    // Um dispositivo utiliza apenas um protocolo
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "protocol_id", nullable = false)
+    private ProtocolTable protocol;
+
+    // Relacionamento One-to-Many com Variable
+    // Um dispositivo pode ter multiplas variaveis
+    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VariableTable> variables = new HashSet<>();
+
+    // Construtor padrao obrigatorio para JPA
     public DeviceTable() {
-        this.isActive = true;
-        this.status = "offline";
+    }
+
+    // Construtor auxiliar
+    public DeviceTable(String name, PlcTable plc, ProtocolTable protocol) {
+        this.name = name;
+        this.plc = plc;
+        this.protocol = protocol;
     }
 
     // Metodos de lifecycle do JPA
@@ -59,6 +71,17 @@ public class DeviceTable {
         this.updatedAt = LocalDateTime.now();
     }
 
+    // Metodos auxiliares para gerenciar relacionamento bidirecional
+    public void addVariable(VariableTable variable) {
+        variables.add(variable);
+        variable.setDevice(this);
+    }
+
+    public void removeVariable(VariableTable variable) {
+        variables.remove(variable);
+        variable.setDevice(null);
+    }
+
     // Getters e Setters
 
     public Long getId() {
@@ -69,60 +92,28 @@ public class DeviceTable {
         this.id = id;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String getName() {
+        return name;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getDescription() {
+        return description;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -139,5 +130,29 @@ public class DeviceTable {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public PlcTable getPlc() {
+        return plc;
+    }
+
+    public void setPlc(PlcTable plc) {
+        this.plc = plc;
+    }
+
+    public ProtocolTable getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(ProtocolTable protocol) {
+        this.protocol = protocol;
+    }
+
+    public Set<VariableTable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Set<VariableTable> variables) {
+        this.variables = variables;
     }
 }

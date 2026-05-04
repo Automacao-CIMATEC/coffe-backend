@@ -9,3 +9,4 @@ target/classes/org/coffee/controllers/MessageController.class
 *.jar
 */target
 /target
+/target

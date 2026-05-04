@@ -22,10 +22,7 @@ public class DeviceController {
         this.deviceService = deviceService;
     }
 
-    /**
-     * Cria um novo dispositivo
-     * POST /api/devices
-     */
+    // Cria um novo dispositivo - POST /api/devices
     @PostMapping
     public ResponseEntity<?> createDevice(@RequestBody Device device) {
         try {
@@ -45,20 +42,14 @@ public class DeviceController {
         }
     }
 
-    /**
-     * Retorna todos os dispositivos
-     * GET /api/devices
-     */
+    // Retorna todos os dispositivos - GET /api/devices
     @GetMapping
     public ResponseEntity<List<Device>> getAllDevices() {
         List<Device> devices = deviceService.getAllDevices();
         return ResponseEntity.ok(devices);
     }
 
-    /**
-     * Busca um dispositivo por ID
-     * GET /api/devices/{id}
-     */
+    // Busca um dispositivo por ID - GET /api/devices/{id}
     @GetMapping("/{id}")
     public ResponseEntity<?> getDeviceById(@PathVariable Long id) {
         return deviceService.getDeviceById(id)
@@ -67,10 +58,7 @@ public class DeviceController {
                         .body(Map.of("error", "Dispositivo nao encontrado")));
     }
 
-    /**
-     * Busca um dispositivo por nome
-     * GET /api/devices/name/{name}
-     */
+    // Busca um dispositivo por nome - GET /api/devices/name/{name}
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getDeviceByName(@PathVariable String name) {
         return deviceService.getDeviceByName(name)
@@ -79,60 +67,28 @@ public class DeviceController {
                         .body(Map.of("error", "Dispositivo nao encontrado")));
     }
 
-    /**
-     * Busca dispositivos por tipo
-     * GET /api/devices/type/{type}
-     */
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<Device>> getDevicesByType(@PathVariable String type) {
-        List<Device> devices = deviceService.getDevicesByType(type);
+    // Busca dispositivos por PLC - GET /api/devices/plc/{plcId}
+    @GetMapping("/plc/{plcId}")
+    public ResponseEntity<List<Device>> getDevicesByPlcId(@PathVariable Long plcId) {
+        List<Device> devices = deviceService.getDevicesByPlcId(plcId);
         return ResponseEntity.ok(devices);
     }
 
-    /**
-     * Busca dispositivos por protocolo
-     * GET /api/devices/protocol/{protocol}
-     */
-    @GetMapping("/protocol/{protocol}")
-    public ResponseEntity<List<Device>> getDevicesByProtocol(@PathVariable String protocol) {
-        List<Device> devices = deviceService.getDevicesByProtocol(protocol);
+    // Busca dispositivos por protocolo - GET /api/devices/protocol/{protocolId}
+    @GetMapping("/protocol/{protocolId}")
+    public ResponseEntity<List<Device>> getDevicesByProtocolId(@PathVariable Long protocolId) {
+        List<Device> devices = deviceService.getDevicesByProtocolId(protocolId);
         return ResponseEntity.ok(devices);
     }
 
-    /**
-     * Busca dispositivos ativos
-     * GET /api/devices/active
-     */
-    @GetMapping("/active")
-    public ResponseEntity<List<Device>> getActiveDevices() {
-        List<Device> devices = deviceService.getActiveDevices();
+    // Busca dispositivos por fabricante - GET /api/devices/manufacturer/{manufacturer}
+    @GetMapping("/manufacturer/{manufacturer}")
+    public ResponseEntity<List<Device>> getDevicesByManufacturer(@PathVariable String manufacturer) {
+        List<Device> devices = deviceService.getDevicesByManufacturer(manufacturer);
         return ResponseEntity.ok(devices);
     }
 
-    /**
-     * Busca dispositivos online
-     * GET /api/devices/online
-     */
-    @GetMapping("/online")
-    public ResponseEntity<List<Device>> getOnlineDevices() {
-        List<Device> devices = deviceService.getOnlineDevices();
-        return ResponseEntity.ok(devices);
-    }
-
-    /**
-     * Busca dispositivos disponiveis (ativos e online)
-     * GET /api/devices/available
-     */
-    @GetMapping("/available")
-    public ResponseEntity<List<Device>> getAvailableDevices() {
-        List<Device> devices = deviceService.getAvailableDevices();
-        return ResponseEntity.ok(devices);
-    }
-
-    /**
-     * Atualiza um dispositivo existente
-     * PUT /api/devices/{id}
-     */
+    // Atualiza um dispositivo existente - PUT /api/devices/{id}
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDevice(@PathVariable Long id, @RequestBody Device device) {
         try {
@@ -152,10 +108,7 @@ public class DeviceController {
         }
     }
 
-    /**
-     * Remove um dispositivo
-     * DELETE /api/devices/{id}
-     */
+    // Remove um dispositivo - DELETE /api/devices/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDevice(@PathVariable Long id) {
         try {
