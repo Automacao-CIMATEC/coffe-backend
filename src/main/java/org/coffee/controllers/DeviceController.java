@@ -11,18 +11,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controlador REST para gerenciamento de dispositivos.
+ * Fornece endpoints para operações CRUD e consultas sobre dispositivos.
+ */
 @RestController
 @RequestMapping("/api/devices")
 public class DeviceController {
 
+    /** Serviço de negócio para operações com dispositivos */
     private final DeviceService deviceService;
 
+    /**
+     * Construtor com injeção de dependência do serviço.
+     *
+     * @param deviceService Serviço de dispositivos a ser injetado
+     */
     @Autowired
     public DeviceController(DeviceService deviceService) {
         this.deviceService = deviceService;
     }
 
-    // Cria um novo dispositivo - POST /api/devices
+    /**
+     * Cria um novo dispositivo no sistema.
+     * Endpoint: POST /api/devices
+     *
+     * @param device Dados do dispositivo a ser criado
+     * @return ResponseEntity contendo o dispositivo criado ou erro
+     */
     @PostMapping
     public ResponseEntity<?> createDevice(@RequestBody Device device) {
         try {
@@ -42,14 +58,25 @@ public class DeviceController {
         }
     }
 
-    // Retorna todos os dispositivos - GET /api/devices
+    /**
+     * Retorna todos os dispositivos cadastrados.
+     * Endpoint: GET /api/devices
+     *
+     * @return ResponseEntity contendo lista de todos os dispositivos
+     */
     @GetMapping
     public ResponseEntity<List<Device>> getAllDevices() {
         List<Device> devices = deviceService.getAllDevices();
         return ResponseEntity.ok(devices);
     }
 
-    // Busca um dispositivo por ID - GET /api/devices/{id}
+    /**
+     * Busca um dispositivo específico por ID.
+     * Endpoint: GET /api/devices/{id}
+     *
+     * @param id Identificador único do dispositivo
+     * @return ResponseEntity contendo o dispositivo ou erro 404
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getDeviceById(@PathVariable Long id) {
         return deviceService.getDeviceById(id)
@@ -58,7 +85,13 @@ public class DeviceController {
                         .body(Map.of("error", "Dispositivo nao encontrado")));
     }
 
-    // Busca um dispositivo por nome - GET /api/devices/name/{name}
+    /**
+     * Busca um dispositivo por nome.
+     * Endpoint: GET /api/devices/name/{name}
+     *
+     * @param name Nome do dispositivo a ser buscado
+     * @return ResponseEntity contendo o dispositivo ou erro 404
+     */
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getDeviceByName(@PathVariable String name) {
         return deviceService.getDeviceByName(name)
@@ -67,28 +100,53 @@ public class DeviceController {
                         .body(Map.of("error", "Dispositivo nao encontrado")));
     }
 
-    // Busca dispositivos por PLC - GET /api/devices/plc/{plcId}
+    /**
+     * Busca todos os dispositivos associados a um PLC específico.
+     * Endpoint: GET /api/devices/plc/{plcId}
+     *
+     * @param plcId Identificador do PLC
+     * @return ResponseEntity contendo lista de dispositivos do PLC
+     */
     @GetMapping("/plc/{plcId}")
     public ResponseEntity<List<Device>> getDevicesByPlcId(@PathVariable Long plcId) {
         List<Device> devices = deviceService.getDevicesByPlcId(plcId);
         return ResponseEntity.ok(devices);
     }
 
-    // Busca dispositivos por protocolo - GET /api/devices/protocol/{protocolId}
+    /**
+     * Busca todos os dispositivos que utilizam um protocolo específico.
+     * Endpoint: GET /api/devices/protocol/{protocolId}
+     *
+     * @param protocolId Identificador do protocolo
+     * @return ResponseEntity contendo lista de dispositivos do protocolo
+     */
     @GetMapping("/protocol/{protocolId}")
     public ResponseEntity<List<Device>> getDevicesByProtocolId(@PathVariable Long protocolId) {
         List<Device> devices = deviceService.getDevicesByProtocolId(protocolId);
         return ResponseEntity.ok(devices);
     }
 
-    // Busca dispositivos por fabricante - GET /api/devices/manufacturer/{manufacturer}
+    /**
+     * Busca todos os dispositivos de um fabricante específico.
+     * Endpoint: GET /api/devices/manufacturer/{manufacturer}
+     *
+     * @param manufacturer Nome do fabricante
+     * @return ResponseEntity contendo lista de dispositivos do fabricante
+     */
     @GetMapping("/manufacturer/{manufacturer}")
     public ResponseEntity<List<Device>> getDevicesByManufacturer(@PathVariable String manufacturer) {
         List<Device> devices = deviceService.getDevicesByManufacturer(manufacturer);
         return ResponseEntity.ok(devices);
     }
 
-    // Atualiza um dispositivo existente - PUT /api/devices/{id}
+    /**
+     * Atualiza os dados de um dispositivo existente.
+     * Endpoint: PUT /api/devices/{id}
+     *
+     * @param id Identificador do dispositivo a ser atualizado
+     * @param device Novos dados do dispositivo
+     * @return ResponseEntity contendo o dispositivo atualizado ou erro
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDevice(@PathVariable Long id, @RequestBody Device device) {
         try {
@@ -108,7 +166,13 @@ public class DeviceController {
         }
     }
 
-    // Remove um dispositivo - DELETE /api/devices/{id}
+    /**
+     * Remove um dispositivo do sistema.
+     * Endpoint: DELETE /api/devices/{id}
+     *
+     * @param id Identificador do dispositivo a ser removido
+     * @return ResponseEntity vazio (204) em caso de sucesso ou erro 404
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDevice(@PathVariable Long id) {
         try {
