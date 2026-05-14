@@ -139,6 +139,19 @@
             <version>3.1.0</version>
         </dependency>
 
+        <!--
+            Ethernet/IP - comunicacao nativa com CLPs Rockwell (ControlLogix, CompactLogix, MicroLogix)
+            O JAR esta incluido em /libs/etherip-1.0.0.jar dentro do proprio projeto.
+            Nao e necessario nenhum repositorio externo nem instalacao manual.
+        -->
+        <dependency>
+            <groupId>org.epics</groupId>
+            <artifactId>etherip</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/etherip-1.0.0.jar</systemPath>
+        </dependency>
+
         <!-- HikariCP para pool de conexões -->
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -152,6 +165,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--
+                        Inclui dependencias com scope=system no fat JAR gerado pelo Spring Boot.
+                        Sem esta configuracao, o etherip-1.0.0.jar seria ignorado no pacote final.
+                    -->
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

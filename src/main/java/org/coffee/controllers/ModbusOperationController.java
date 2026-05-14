@@ -36,7 +36,102 @@ public class ModbusOperationController {
         this.variableModbusRepository = variableModbusRepository;
     }
 
-    // Le o valor de uma variavel especifica
+    /**
+     * Seleciona e executa a leitura Modbus correta com base no registerType e dataType da variavel.
+     *
+     * Logica de decisao:
+     *   - registerType == "COIL" -> ReadCoils (funcao Modbus 01), retorna booleano
+     *   - registerType == "INPUT_REGISTER" ou "HOLDING_REGISTER" -> ReadRegisters,
+     *     com dataType determinando a interpretacao dos bytes (INT, FLOAT ou STRING)
+     *
+     * O campo dataType (herdado de VariableTable) NAO deve ser usado para selecionar
+     * a funcao Modbus, pois ele descreve o tipo logico do dado, nao o tipo de registrador.
+     * O campo registerType (proprio de VariableModbusTable) e o correto para essa decisao.
+     */
+    private Object readValue(AbstractProtocol protocol, VariableModbusTable variable) throws Exception {
+        // Tipo de registrador Modbus: COIL, INPUT_REGISTER, HOLDING_REGISTER
+        String registerType = variable.getRegisterType();
+
+        // Tipo logico do dado: INT, FLOAT, STRING (usado apenas para registradores)
+        String dataType = variable.getDataType();
+
+        int address = variable.getAddress();
+
+        if (registerType.equalsIgnoreCase("COIL")) {
+            // Funcao Modbus 01 - Read Coils: retorna valor booleano
+            return protocol.readDataBoolean(address);
+
+        } else if (registerType.equalsIgnoreCase("INPUT_REGISTER")
+                || registerType.equalsIgnoreCase("HOLDING_REGISTER")) {
+
+            // Funcoes Modbus 03/04 - Read Registers: interpretacao depende do dataType
+            if (dataType.equalsIgnoreCase("FLOAT") || dataType.equalsIgnoreCase("REAL")) {
+                return protocol.readDataFloat(address);
+            } else if (dataType.equalsIgnoreCase("STRING")) {
+                // Tamanho padrao de 10 registradores para strings sem comprimento definido
+                return protocol.readDataString(address, 10);
+            } else {
+                // Padrao: trata como INT (cobre INT, INTEGER e tipos desconhecidos)
+                return protocol.readDataInt(address);
+            }
+
+        } else {
+            // Tipo de registrador desconhecido: registra aviso e tenta como INT por seguranca
+            System.err.println("Tipo de registrador desconhecido: " + registerType
+                    + " para variavel id=" + variable.getId() + ". Tentando leitura como INT.");
+            return protocol.readDataInt(address);
+        }
+    }
+
+    /**
+     * Seleciona e executa a escrita Modbus correta com base no registerType e dataType da variavel.
+     *
+     * Mesma logica de decisao do metodo readValue:
+     *   - registerType == "COIL" -> WriteSingleCoil (funcao Modbus 05)
+     *   - registerType == "HOLDING_REGISTER" -> WriteRegister/WriteMultipleRegisters,
+     *     com dataType determinando a conversao do valor recebido como String
+     *
+     * Nota: INPUT_REGISTER e somente leitura no protocolo Modbus padrao.
+     */
+    private void writeValue(AbstractProtocol protocol, VariableModbusTable variable, String value) throws Exception {
+        // Tipo de registrador Modbus: COIL, INPUT_REGISTER, HOLDING_REGISTER
+        String registerType = variable.getRegisterType();
+
+        // Tipo logico do dado: INT, FLOAT, STRING (usado apenas para registradores)
+        String dataType = variable.getDataType();
+
+        int address = variable.getAddress();
+
+        if (registerType.equalsIgnoreCase("COIL")) {
+            // Funcao Modbus 05 - Write Single Coil
+            boolean boolValue = Boolean.parseBoolean(value);
+            protocol.writeData(address, boolValue);
+
+        } else if (registerType.equalsIgnoreCase("HOLDING_REGISTER")) {
+            // Funcoes Modbus 06/16 - Write Register(s): conversao depende do dataType
+            if (dataType.equalsIgnoreCase("FLOAT") || dataType.equalsIgnoreCase("REAL")) {
+                float floatValue = Float.parseFloat(value);
+                protocol.writeData(address, floatValue);
+            } else if (dataType.equalsIgnoreCase("STRING")) {
+                protocol.writeData(address, value);
+            } else {
+                // Padrao: trata como INT
+                int intValue = Integer.parseInt(value);
+                protocol.writeData(address, intValue);
+            }
+
+        } else {
+            // INPUT_REGISTER e somente leitura; outros tipos desconhecidos sao rejeitados
+            throw new RuntimeException(
+                    "Escrita nao suportada para registerType: " + registerType
+                            + ". INPUT_REGISTER e somente leitura no protocolo Modbus padrao.");
+        }
+    }
+
+    // =========================================================================
+    // ENDPOINTS
+    // =========================================================================
+
     @GetMapping("/read/device/{deviceId}/variable/{variableId}")
     @Operation(summary = "Le o valor de uma variavel Modbus especifica")
     @ApiResponse(responseCode = "200", description = "Variavel lida com sucesso")
@@ -48,63 +143,47 @@ public class ModbusOperationController {
             @PathVariable Long variableId) {
 
         try {
-            // Busca o dispositivo
+            // Busca o dispositivo no repositorio
             DeviceTable device = deviceRepository.findById(deviceId)
-                    .orElseThrow(() -> new RuntimeException("Dispositivo nao encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Dispositivo nao encontrado: id=" + deviceId));
 
-            // Busca a variavel
+            // Busca a variavel no repositorio
             VariableModbusTable variable = variableModbusRepository.findById(variableId)
-                    .orElseThrow(() -> new RuntimeException("Variavel nao encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Variavel nao encontrada: id=" + variableId));
 
-            // Valida se a variavel pertence ao dispositivo
+            // Valida se a variavel pertence ao dispositivo informado
             if (!variable.getDevice().getId().equals(deviceId)) {
-                throw new RuntimeException("Variavel nao pertence ao dispositivo especificado");
+                throw new RuntimeException(
+                        "Variavel id=" + variableId + " nao pertence ao dispositivo id=" + deviceId);
             }
 
-            // Obtem os dados necessarios do banco
+            // Obtem parametros de conexao a partir do PLC e da variavel
             PlcTable plc = device.getPlc();
             String ip = plc.getIp();
-            int port = variable.getPort();  // Port agora vem da variavel
+            int port = variable.getPort();
             int unitId = variable.getUnitId();
-            String dataType = variable.getDataType();
-            int address = variable.getAddress();
 
-            // Cria protocolo Modbus (igual ao ModbusController)
+            // Instancia o protocolo Modbus e abre a conexao com o CLP
             AbstractProtocol protocol = new ModbusProtocol(ip, port, unitId);
-
-            // Conecta ao PLC
             protocol.openConnection();
 
-            // Le o valor baseado no dataType (EXATAMENTE como no ModbusController)
-            Object value;
+            // Executa a leitura utilizando registerType para selecionar a funcao correta
+            Object value = readValue(protocol, variable);
 
-            if (dataType.equalsIgnoreCase("BOOLEAN") || dataType.equalsIgnoreCase("BOOL")) {
-                value = protocol.readDataBoolean(address);
-            } else if (dataType.equalsIgnoreCase("INT") || dataType.equalsIgnoreCase("INTEGER")) {
-                value = protocol.readDataInt(address);
-            } else if (dataType.equalsIgnoreCase("FLOAT") || dataType.equalsIgnoreCase("REAL")) {
-                value = protocol.readDataFloat(address);
-            } else if (dataType.equalsIgnoreCase("STRING")) {
-                // Para string, usa tamanho padrao de 10 registros
-                value = protocol.readDataString(address, 10);
-            } else {
-                // Default: trata como INT
-                value = protocol.readDataInt(address);
-            }
-
-            // Fecha conexao
+            // Encerra a conexao apos a leitura
             protocol.closeConnection();
 
-            // Monta resposta
+            // Monta e retorna a resposta
             Map<String, Object> response = new HashMap<>();
             response.put("deviceId", deviceId);
             response.put("deviceName", device.getName());
             response.put("variableId", variableId);
             response.put("variableName", variable.getName());
+            response.put("registerType", variable.getRegisterType());
+            response.put("dataType", variable.getDataType());
+            response.put("address", variable.getAddress());
             response.put("value", value);
             response.put("unit", variable.getUnit());
-            response.put("dataType", variable.getDataType());
-            response.put("address", address);
             response.put("timestamp", java.time.LocalDateTime.now().toString());
 
             return ResponseEntity.ok(response);
@@ -117,7 +196,6 @@ public class ModbusOperationController {
         }
     }
 
-    // Escreve um valor em uma variavel especifica
     @PostMapping("/write/device/{deviceId}/variable/{variableId}")
     @Operation(summary = "Escreve um valor em uma variavel Modbus especifica")
     @ApiResponse(responseCode = "200", description = "Variavel escrita com sucesso")
@@ -132,70 +210,54 @@ public class ModbusOperationController {
             @RequestParam String value) {
 
         try {
-            // Busca o dispositivo
+            // Busca o dispositivo no repositorio
             DeviceTable device = deviceRepository.findById(deviceId)
-                    .orElseThrow(() -> new RuntimeException("Dispositivo nao encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Dispositivo nao encontrado: id=" + deviceId));
 
-            // Busca a variavel
+            // Busca a variavel no repositorio
             VariableModbusTable variable = variableModbusRepository.findById(variableId)
-                    .orElseThrow(() -> new RuntimeException("Variavel nao encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Variavel nao encontrada: id=" + variableId));
 
-            // Valida se a variavel pertence ao dispositivo
+            // Valida se a variavel pertence ao dispositivo informado
             if (!variable.getDevice().getId().equals(deviceId)) {
-                throw new RuntimeException("Variavel nao pertence ao dispositivo especificado");
+                throw new RuntimeException(
+                        "Variavel id=" + variableId + " nao pertence ao dispositivo id=" + deviceId);
             }
 
-            // Obtem os dados necessarios do banco
+            // Obtem parametros de conexao a partir do PLC e da variavel
             PlcTable plc = device.getPlc();
             String ip = plc.getIp();
             int port = variable.getPort();
             int unitId = variable.getUnitId();
-            String dataType = variable.getDataType();
-            int address = variable.getAddress();
 
-            // Cria protocolo Modbus (igual ao ModbusController)
+            // Instancia o protocolo Modbus e abre a conexao com o CLP
             AbstractProtocol protocol = new ModbusProtocol(ip, port, unitId);
-
-            // Conecta ao PLC
             protocol.openConnection();
 
-            // Escreve o valor baseado no dataType (EXATAMENTE como no ModbusController)
-            if (dataType.equalsIgnoreCase("BOOLEAN") || dataType.equalsIgnoreCase("BOOL")) {
-                boolean boolValue = Boolean.parseBoolean(value);
-                protocol.writeData(address, boolValue);
-            } else if (dataType.equalsIgnoreCase("INT") || dataType.equalsIgnoreCase("INTEGER")) {
-                int intValue = Integer.parseInt(value);
-                protocol.writeData(address, intValue);
-            } else if (dataType.equalsIgnoreCase("FLOAT") || dataType.equalsIgnoreCase("REAL")) {
-                float floatValue = Float.parseFloat(value);
-                protocol.writeData(address, floatValue);
-            } else if (dataType.equalsIgnoreCase("STRING")) {
-                protocol.writeData(address, value);
-            } else {
-                // Default: trata como INT
-                int intValue = Integer.parseInt(value);
-                protocol.writeData(address, intValue);
-            }
+            // Executa a escrita utilizando registerType para selecionar a funcao correta
+            writeValue(protocol, variable, value);
 
-            // Fecha conexao
+            // Encerra a conexao apos a escrita
             protocol.closeConnection();
 
-            // Monta resposta
+            // Monta e retorna a resposta
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Valor escrito com sucesso");
             response.put("deviceId", deviceId);
             response.put("deviceName", device.getName());
             response.put("variableId", variableId);
             response.put("variableName", variable.getName());
+            response.put("registerType", variable.getRegisterType());
+            response.put("dataType", variable.getDataType());
+            response.put("address", variable.getAddress());
             response.put("writtenValue", value);
-            response.put("address", address);
             response.put("timestamp", java.time.LocalDateTime.now().toString());
 
             return ResponseEntity.ok(response);
 
         } catch (NumberFormatException e) {
             Map<String, String> error = new HashMap<>();
-            error.put("error", "Formato de valor invalido: " + e.getMessage());
+            error.put("error", "Formato de valor invalido para o tipo de dado esperado: " + e.getMessage());
             error.put("timestamp", java.time.LocalDateTime.now().toString());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         } catch (Exception e) {
@@ -206,7 +268,6 @@ public class ModbusOperationController {
         }
     }
 
-    /// Le todas as variaveis de um dispositivo
     @GetMapping("/read/device/{deviceId}/all")
     @Operation(summary = "Le todas as variaveis Modbus de um dispositivo")
     @ApiResponse(responseCode = "200", description = "Variaveis lidas com sucesso")
@@ -215,11 +276,11 @@ public class ModbusOperationController {
             @PathVariable Long deviceId) {
 
         try {
-            // Busca o dispositivo
+            // Busca o dispositivo no repositorio
             DeviceTable device = deviceRepository.findById(deviceId)
-                    .orElseThrow(() -> new RuntimeException("Dispositivo nao encontrado"));
+                    .orElseThrow(() -> new RuntimeException("Dispositivo nao encontrado: id=" + deviceId));
 
-            // Busca todas as variaveis do dispositivo
+            // Busca todas as variaveis associadas ao dispositivo
             List<VariableModbusTable> variables = variableModbusRepository.findByDeviceId(deviceId);
 
             if (variables.isEmpty()) {
@@ -230,53 +291,39 @@ public class ModbusOperationController {
                 return ResponseEntity.ok(response);
             }
 
-            // Obtem dados do PLC
-            PlcTable plc = device.getPlc();
-            String ip = plc.getIp();
+            // Obtem o IP do PLC associado ao dispositivo
+            String ip = device.getPlc().getIp();
 
-            // Le todas as variaveis
+            // Itera sobre cada variavel, conecta individualmente e realiza a leitura
             List<Map<String, Object>> results = variables.stream().map(variable -> {
                 Map<String, Object> result = new HashMap<>();
                 result.put("variableId", variable.getId());
                 result.put("variableName", variable.getName());
-                result.put("unit", variable.getUnit());
+                result.put("registerType", variable.getRegisterType());
                 result.put("dataType", variable.getDataType());
+                result.put("unit", variable.getUnit());
                 result.put("address", variable.getAddress());
 
                 try {
-                    String dataType = variable.getDataType();
-                    int address = variable.getAddress();
+                    // Cada variavel pode ter porta e unitId proprios
+                    int port = variable.getPort();
                     int unitId = variable.getUnitId();
-                    int port = variable.getPort(); // Agora definido dentro da lambda onde 'variable' existe
 
-                    // Cria protocolo Modbus
+                    // Instancia e conecta o protocolo para esta variavel
                     AbstractProtocol protocol = new ModbusProtocol(ip, port, unitId);
-
-                    // Conecta ao PLC
                     protocol.openConnection();
 
-                    // Le o valor baseado no dataType
-                    Object value;
+                    // Executa a leitura com base no registerType da variavel
+                    Object value = readValue(protocol, variable);
 
-                    if (dataType.equalsIgnoreCase("BOOLEAN") || dataType.equalsIgnoreCase("BOOL")) {
-                        value = protocol.readDataBoolean(address);
-                    } else if (dataType.equalsIgnoreCase("INT") || dataType.equalsIgnoreCase("INTEGER")) {
-                        value = protocol.readDataInt(address);
-                    } else if (dataType.equalsIgnoreCase("FLOAT") || dataType.equalsIgnoreCase("REAL")) {
-                        value = protocol.readDataFloat(address);
-                    } else if (dataType.equalsIgnoreCase("STRING")) {
-                        value = protocol.readDataString(address, 10);
-                    } else {
-                        value = protocol.readDataInt(address);
-                    }
-
-                    // Fecha conexao
+                    // Encerra a conexao apos a leitura
                     protocol.closeConnection();
 
                     result.put("value", value);
                     result.put("status", "success");
 
                 } catch (Exception e) {
+                    // Falha individual nao interrompe a leitura das demais variaveis
                     result.put("value", null);
                     result.put("status", "error");
                     result.put("error", e.getMessage());
@@ -285,7 +332,7 @@ public class ModbusOperationController {
                 return result;
             }).collect(Collectors.toList());
 
-            // Monta resposta final
+            // Monta e retorna a resposta consolidada
             Map<String, Object> response = new HashMap<>();
             response.put("deviceId", deviceId);
             response.put("deviceName", device.getName());
