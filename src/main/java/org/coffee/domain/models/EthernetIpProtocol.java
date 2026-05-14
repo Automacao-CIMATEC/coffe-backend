@@ -235,12 +235,10 @@ public class EthernetIpProtocol extends AbstractProtocol {
      */
     public String readString(String tagName) throws Exception {
         verificarConexao();
-        // readStringTags() usa o servico CIP correto para tags do tipo STRING do Rockwell
-        CIPData[] results = plc.readStringTags(tagName);
-        if (results == null || results.length == 0 || results[0] == null) {
-            throw new Exception("Leitura de STRING retornou resultado nulo para tag: " + tagName);
-        }
-        return results[0].getString();
+        // readTag() retorna CIPData com tipo STRUCT, que e o tipo correto para getString().
+        // readStringTags() retorna STRUCT_STRING, que nao suporta getString() nem setString().
+        CIPData data = plc.readTag(tagName);
+        return data.getString();
     }
 
     /**
@@ -327,13 +325,10 @@ public class EthernetIpProtocol extends AbstractProtocol {
      */
     public void writeString(String tagName, String value) throws Exception {
         verificarConexao();
-        // Leitura previa para obter o CIPData com tipo STRUCT_STRING correto
-        CIPData[] results = plc.readStringTags(tagName);
-        if (results == null || results.length == 0 || results[0] == null) {
-            throw new Exception("Nao foi possivel ler a tag STRING para escrita: " + tagName);
-        }
-        CIPData data = results[0];
-        // setString() usa o encoding especifico do Rockwell para tags STRING
+        // readTag() retorna CIPData com tipo STRUCT, exigido por setString().
+        // setString() falha se o tipo for STRUCT_STRING (retornado por readStringTags()).
+        CIPData data = plc.readTag(tagName);
+        // setString() codifica o valor no formato interno do Rockwell (2 bytes tipo + 4 bytes comprimento + dados)
         data.setString(value);
         plc.writeTag(tagName, data);
     }

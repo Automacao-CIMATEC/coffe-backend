@@ -42,7 +42,7 @@ public class VariableEthernetIpService {
         }
 
         if (!variable.hasValidDataType()) {
-            throw new RuntimeException("Tipo de dados invalido. Use: BOOL, SINT, INT, DINT, REAL ou STRING");
+            throw new RuntimeException("Tipo de dados invalido. Use: BOOL, SINT, INT, DINT, REAL, FLOAT ou STRING");
         }
 
         if (variable.getDeviceId() == null) {

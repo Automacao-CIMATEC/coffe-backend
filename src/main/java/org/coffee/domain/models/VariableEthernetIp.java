@@ -71,12 +71,14 @@ public class VariableEthernetIp {
     public boolean hasValidDataType() {
         if (this.dataType == null) return false;
         String type = this.dataType.toUpperCase();
+        // FLOAT e sinonimo de REAL — ambos sao aceitos para compatibilidade com clientes
         return type.equals("BOOL") ||
                 type.equals("BOOLEAN") ||
                 type.equals("SINT") ||
                 type.equals("INT") ||
                 type.equals("DINT") ||
                 type.equals("REAL") ||
+                type.equals("FLOAT") ||
                 type.equals("STRING");
     }
 
