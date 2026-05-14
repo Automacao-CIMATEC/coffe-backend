@@ -18,7 +18,7 @@ import java.util.Map;
  * indexadas pelo ID do dispositivo.
  *
  * Por que existir: o handshake S7 (TCP + ISO-on-TCP + COTP + S7 setup)
- * custa ~100ms por conexao.
+ * custa ~100ms por conexao. A
  *
  * Modelo de uso explicito: o cliente deve chamar openConnection(deviceId)
  * antes de qualquer leitura/escrita. Tentativas de operar sem conexao
@@ -28,6 +28,16 @@ import java.util.Map;
  *
  * Thread-safety: o mapa de conexoes e sincronizado. As proprias
  * PlcConnection da PLC4X sao thread-safe para leituras concorrentes.
+ *
+ * Driver: usa o "s7-light" da PLC4X (mesma dependencia Maven plc4j-driver-s7,
+ * apenas schema diferente na connection string). O driver padrao "s7://"
+ * apresenta um bug conhecido sob carga concorrente (NullPointerException
+ * em ChannelOutboundBuffer.addFlush por entry.promise null - issue #2394
+ * do apache/plc4x), causado por race condition no RequestTransactionManager
+ * interno. O s7-light foi criado pelo proprio mantenedor da PLC4X
+ * especificamente para contornar esse problema em S7-1200/1500, removendo
+ * suporte a subscriptions (que nao usamos - nosso modelo e polling via
+ * request/response).
  */
 @Service
 public class SiemensS7ConnectionRegistry {
@@ -89,8 +99,12 @@ public class SiemensS7ConnectionRegistry {
                                 + "de abrir a conexao.");
             }
 
+            // controller-type hardcoded em S7_1200 (unico modelo no kit atual).
+            // TODO quando houver suporte a outros modelos, mover para
+            // PlcSiemensS7ConfigTable junto com rack/slot. Valores aceitos pela
+            // PLC4X: S7_300, S7_400, S7_1200, S7_1500, LOGO.
             String connectionString = String.format(
-                    "s7://%s?remote-rack=%d&remote-slot=%d",
+                    "s7-light://%s?remote-rack=%d&remote-slot=%d&controller-type=S7_1200",
                     plc.getIp(), s7Config.getRack(), s7Config.getSlot());
 
             try {

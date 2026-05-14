@@ -12,6 +12,7 @@ import org.coffee.domain.models.database.VariableSiemensS7Table;
 import org.coffee.repository.DeviceRepository;
 import org.coffee.repository.VariableSiemensS7Repository;
 import org.coffee.services.SiemensS7ConnectionRegistry;
+import org.coffee.services.SiemensS7DataTypeDispatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,9 +53,7 @@ public class SiemensS7OperationController {
         this.connectionRegistry = connectionRegistry;
     }
 
-    // ====================================================================
     // GERENCIAMENTO DE CONEXAO
-    // ====================================================================
 
     @PostMapping("/connect/device/{deviceId}")
     @Operation(summary = "Abre a conexao S7 com o dispositivo. Idempotente.")
@@ -147,7 +146,7 @@ public class SiemensS7OperationController {
 
             SiemensS7Protocol protocol = buildProtocol(deviceId);
 
-            Object value = readByDataType(
+            Object value = SiemensS7DataTypeDispatcher.read(
                     protocol,
                     variable.getDataType(),
                     variable.getDbNumber(),
@@ -199,7 +198,7 @@ public class SiemensS7OperationController {
 
             SiemensS7Protocol protocol = buildProtocol(deviceId);
 
-            writeByDataType(
+            SiemensS7DataTypeDispatcher.write(
                     protocol,
                     variable.getDataType(),
                     variable.getDbNumber(),
@@ -223,6 +222,8 @@ public class SiemensS7OperationController {
         } catch (IllegalStateException e) {
             return error(HttpStatus.CONFLICT, e.getMessage());
         } catch (IllegalArgumentException e) {
+            // NumberFormatException herda de IllegalArgumentException, entao
+            // value malformado (ex: writeInt com "abc") cai aqui automaticamente
             return error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             return error(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -263,7 +264,7 @@ public class SiemensS7OperationController {
                 result.put("unit", variable.getUnit());
                 result.put("dataType", variable.getDataType());
                 try {
-                    Object value = readByDataType(
+                    Object value = SiemensS7DataTypeDispatcher.read(
                             protocol,
                             variable.getDataType(),
                             variable.getDbNumber(),
@@ -322,46 +323,6 @@ public class SiemensS7OperationController {
                 plc.getIp(), rack, slot,
                 connectionRegistry.getActiveConnection(deviceId)
         );
-    }
-
-    private Object readByDataType(SiemensS7Protocol protocol, String dataType,
-                                  Integer dbNumber, Integer offset, Integer bitOffset) {
-        String t = dataType == null ? "" : dataType.toUpperCase();
-        switch (t) {
-            case "BOOL": case "BOOLEAN":
-                return protocol.readBool(dbNumber, offset, bitOffset != null ? bitOffset : 0);
-            case "BYTE":    return protocol.readByte(dbNumber, offset);
-            case "WORD":    return protocol.readWord(dbNumber, offset);
-            case "DWORD":   return protocol.readDWord(dbNumber, offset);
-            case "INT": case "INTEGER":  return protocol.readInt(dbNumber, offset);
-            case "DINT":    return protocol.readDInt(dbNumber, offset);
-            case "REAL": case "FLOAT":   return protocol.readReal(dbNumber, offset);
-            case "STRING":  return protocol.readString(dbNumber, offset);
-            default: throw new IllegalArgumentException(
-                    "Tipo de dado nao suportado para Siemens S7: " + dataType);
-        }
-    }
-
-    private void writeByDataType(SiemensS7Protocol protocol, String dataType,
-                                 Integer dbNumber, Integer offset, Integer bitOffset,
-                                 String value) {
-        String t = dataType == null ? "" : dataType.toUpperCase();
-        int bit = bitOffset != null ? bitOffset : 0;
-        switch (t) {
-            case "BOOL": case "BOOLEAN":
-                protocol.writeBool(dbNumber, offset, bit, Boolean.parseBoolean(value)); break;
-            case "BYTE":    protocol.writeByte(dbNumber, offset, Byte.parseByte(value)); break;
-            case "WORD":    protocol.writeWord(dbNumber, offset, Integer.parseInt(value)); break;
-            case "DWORD":   protocol.writeDWord(dbNumber, offset, Long.parseLong(value)); break;
-            case "INT": case "INTEGER":
-                protocol.writeInt(dbNumber, offset, Integer.parseInt(value)); break;
-            case "DINT":    protocol.writeDInt(dbNumber, offset, Integer.parseInt(value)); break;
-            case "REAL": case "FLOAT":
-                protocol.writeReal(dbNumber, offset, Float.parseFloat(value)); break;
-            case "STRING":  protocol.writeString(dbNumber, offset, value); break;
-            default: throw new IllegalArgumentException(
-                    "Tipo de dado nao suportado para Siemens S7: " + dataType);
-        }
     }
 
     private static String now() {
