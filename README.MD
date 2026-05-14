@@ -13,6 +13,11 @@ O coffe-backend permite as seguintes funcionalidades:
   - MQTT
   - OPC-UA
 
+Implementações futuras:
+- Comunicação com CLPs
+  - Siemens S7
+  - Ethernet/IP
+
 ## Autores
 
 [Davih de Andrade Machado Borges Santos](https://github.com/DavihDeAndrade)
@@ -25,8 +30,10 @@ Davi Muniz da Silva
 
 José Santos Damasceno
 
-## Responsável
+## Responsáveis
 [Davih de Andrade Machado Borges Santos](https://github.com/DavihDeAndrade)
+
+José Marcelo de Assis Santos
 
 ## Instalação
 

@@ -1,0 +1,3 @@
+- Spring Boot (Apache 2.0) - https://spring.io/projects/spring-boot
+- Eclipse Milo (EPL 2.0 / EDL 1.0) - https://github.com/eclipse/milo
+- Hibernate ORM (LGPL 2.1) - https://hibernate.org
