@@ -24,6 +24,7 @@
         <paho.version>1.2.5</paho.version>
         <hibernate.version>6.4.4.Final</hibernate.version>
         <postgresql.version>42.7.1</postgresql.version>
+        <plc4x.version>0.13.0</plc4x.version>
     </properties>
 
     <dependencies>
@@ -102,6 +103,19 @@
             <groupId>com.digitalpetri.modbus</groupId>
             <artifactId>modbus-master-tcp</artifactId>
             <version>1.2.0</version>
+        </dependency>
+
+        <!-- Apache PLC4X - Siemens S7 driver -->
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-api</artifactId>
+            <version>${plc4x.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.plc4x</groupId>
+            <artifactId>plc4j-driver-s7</artifactId>
+            <version>${plc4x.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Hibernate Core -->

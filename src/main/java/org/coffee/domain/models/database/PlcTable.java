@@ -41,6 +41,12 @@ public class PlcTable {
     @OneToMany(mappedBy = "plc", cascade = CascadeType.ALL)
     private Set<DeviceTable> devices = new HashSet<>();
 
+    // Relacionamento 1:1 opcional com a configuracao Siemens S7.
+    // O lado dono e PlcSiemensS7ConfigTable (la mora a FK plc_id).
+    // Pode ser null para PLCs que nao falam o protocolo S7.
+    @OneToOne(mappedBy = "plc", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private PlcSiemensS7ConfigTable siemensS7Config;
+
     // Construtor padrao obrigatorio para JPA
     public PlcTable() {
     }
@@ -135,5 +141,13 @@ public class PlcTable {
 
     public void setDevices(Set<DeviceTable> devices) {
         this.devices = devices;
+    }
+
+    public PlcSiemensS7ConfigTable getSiemensS7Config() {
+        return siemensS7Config;
+    }
+
+    public void setSiemensS7Config(PlcSiemensS7ConfigTable siemensS7Config) {
+        this.siemensS7Config = siemensS7Config;
     }
 }
