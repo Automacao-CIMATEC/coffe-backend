@@ -62,6 +62,7 @@ org/coffee/domain/models/MqttProtocol.class
 org/coffee/domain/models/User.class
 org/coffee/examples/mqtt/MqttPublisher.class
 org/coffee/services/DeviceService.class
+org/coffee/domain/models/EthernetIpProtocol$BitAddress.class
 org/coffee/utils/mappers/VariableOpcUaMapper.class
 org/coffee/examples/modbus/ModbusClientReader.class
 org/coffee/repository/ProtocolRepository.class

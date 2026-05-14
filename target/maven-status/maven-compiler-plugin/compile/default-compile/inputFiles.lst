@@ -23,6 +23,7 @@
 /home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/domain/models/VariableMqtt.java
 /home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/repository/PlcRepository.java
 /home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/domain/models/Plc.java
+/home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/domain/models/EthernetIpProtocol.java
 /home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/utils/mappers/VariableOpcUaMapper.java
 /home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/controllers/ProtocolController.java
 /home/davih/davih/dev/teste/plc-communication/src/main/java/org/coffee/Main.java
